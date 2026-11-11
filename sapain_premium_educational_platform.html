@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAPAin - Sarana Panduan Etika dalam Interaksi Kampus</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sapablue: {
+                            50: '#F0F7FF',
+                            100: '#E3F2FD',
+                            200: '#90CAF9',
+                            300: '#4FC3F7',
+                            600: '#1976D2',
+                            700: '#1565C0',
+                            900: '#0D47A1',
+                        },
+                        sapaaccent: {
+                            300: '#FFE082',
+                            400: '#FFD54F',
+                            500: '#FFC107',
+                            600: '#FFB300',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        .floating-element {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .text-highlight {
+            background-color: rgba(255, 213, 79, 0.4);
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+        .reading-active {
+            border-left: 4px solid #1565C0;
+            background-color: rgba(227, 242, 253, 0.4);
+        }
+        /* Fade-in Animation for Tab Views */
+        .tab-view {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out forwards;
+        }
+        .tab-view.active-view {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #90CAF9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1565C0;
+        }
+    </style>
+</head>
+<body class="bg-sapablue-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 pointer-events-none">
+        <i id="toast-icon" class="fas fa-check-circle text-emerald-400 dark:text-emerald-600 text-xl"></i>
+        <span id="toast-message" class="text-sm font-medium">Pesan berhasil disalin!</span>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md sticky top-0 z-30 shadow-sm border-b border-sapablue-100 dark:border-slate-700 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchMainTab('beranda')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sapablue-900 to-sapablue-600 flex items-center justify-center text-white shadow-md">
+                        <!-- Custom SVG Logo: Book, Speech Bubble, Grad Cap -->
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#FFD54F" stroke="none"/>
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                            <circle cx="15" cy="11" r="3" fill="#4FC3F7" opacity="0.6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-sapablue-900 to-sapablue-600 dark:from-sapablue-200 dark:to-sapablue-400 bg-clip-text text-transparent">SAPAin</span>
+                        <span class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 -mt-1 tracking-wider uppercase">Etika Kampus</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-1 text-xs font-medium">
+                    <button id="nav-btn-beranda" onclick="switchMainTab('beranda')" class="nav-main-btn px-3 py-2 rounded-lg transition font-bold text-sapablue-700 bg-sapablue-100 dark:bg-slate-700 dark:text-sapablue-300">Beranda</button>
+                    <button id="nav-btn-materi" onclick="switchMainTab('materi')" class="nav-main-btn px-3 py-2 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700 transition">Materi Edukasi</button>
+                    <button id="nav-btn-interaktif" onclick="switchMainTab('interaktif')" class="nav-main-btn px-3 py-2 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700 transition font-semibold text-sapablue-700 dark:text-sapablue-300">7 Fitur Interaktif</button>
+                    <button id="nav-btn-eksklusif" onclick="switchMainTab('eksklusif')" class="nav-main-btn px-3 py-2 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700 transition font-semibold text-sapaaccent-600 dark:text-sapaaccent-400">6 Fitur Eksklusif</button>
+                    <button id="nav-btn-kuis" onclick="switchMainTab('kuis')" class="nav-main-btn px-3 py-2 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700 transition">Kuis</button>
+                    <button id="nav-btn-tentang" onclick="switchMainTab('tentang')" class="nav-main-btn px-3 py-2 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700 transition">Tentang</button>
+                </div>
+
+                <!-- Search & Controls -->
+                <div class="flex items-center space-x-2">
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Cari materi etika..." class="w-36 md:w-48 pl-8 pr-3 py-1.5 rounded-full text-xs bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-sapablue-600">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition" title="Toggle Tema">
+                        <i id="dark-icon" class="fas fa-moon"></i>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 space-y-2 text-sm font-medium">
+            <input type="text" id="search-input-mobile" onkeyup="handleSearchMobile()" placeholder="Cari materi etika..." class="w-full mb-2 px-3 py-2 rounded-lg text-xs bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600">
+            <button onclick="switchMainTab('beranda'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700">Beranda</button>
+            <button onclick="switchMainTab('materi'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700">Materi Edukasi Utama</button>
+            <button onclick="switchMainTab('interaktif'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded-lg font-bold text-sapablue-600">7 Fitur Interaktif</button>
+            <button onclick="switchMainTab('eksklusif'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded-lg font-bold text-sapaaccent-600">6 Fitur Eksklusif</button>
+            <button onclick="switchMainTab('kuis'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700">Kuis Interaktif</button>
+            <button onclick="switchMainTab('tentang'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700">Tentang SAPAin</button>
+        </div>
+    </nav>
+
+    <!-- Main Container (Dedicated SPA Views) -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= VIEW 1: BERANDA ================= -->
+        <div id="view-beranda" class="tab-view active-view space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Hero Content -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-sapablue-100 dark:bg-slate-800 text-sapablue-900 dark:text-sapablue-200 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-sapaaccent-500 animate-ping"></span>
+                        <span>Platform Edukasi Etika Kampus Digital #1</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-tight">
+                        Bangun Komunikasi Santun, Ciptakan Lingkungan Kampus yang <span class="text-sapablue-600 dark:text-sapablue-400">Nyaman.</span>
+                    </h1>
+                    <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        <strong>SAPAin (Sarana Panduan Etika dalam Interaksi)</strong> adalah platform pembelajaran digital interaktif bagi mahasiswa untuk menguasai etika, tata krama, dan sopan santun berkomunikasi baik secara langsung maupun digital dengan dosen dan sesama sivitas akademika.
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="switchMainTab('interaktif', 'sapa-check')" class="px-6 py-3 bg-sapablue-700 hover:bg-sapablue-900 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow-lg hover:shadow-xl transition flex items-center space-x-2">
+                            <i class="fas fa-play-circle"></i> <span>Mulai Belajar</span>
+                        </button>
+                        <button onclick="switchMainTab('materi', 'etika')" class="px-6 py-3 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold rounded-xl text-xs sm:text-sm shadow-md transition border border-slate-200 dark:border-slate-700">
+                            Jelajahi Materi <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- Progress Tracker Bar -->
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span class="text-slate-600 dark:text-slate-400"><i class="fas fa-chart-line text-sapablue-600 mr-1"></i> Progres Belajar Anda</span>
+                            <span id="progress-percentage" class="text-sapablue-600 dark:text-sapablue-400">35%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                            <div id="progress-bar-fill" class="bg-gradient-to-r from-sapablue-600 to-sapaaccent-500 h-2.5 rounded-full transition-all duration-500" style="width: 35%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Illustration & Daily Tip Card -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="relative bg-gradient-to-br from-sapablue-100 to-sapablue-200 dark:from-slate-800 dark:to-slate-700 rounded-3xl p-6 shadow-xl overflow-hidden flex flex-col items-center text-center">
+                        <!-- Student-Lecturer Cartoon Illustration (SVG) -->
+                        <div class="w-full h-56 floating-element flex items-center justify-center">
+                            <svg class="w-full h-full max-w-xs" viewBox="0 0 300 200" fill="none">
+                                <circle cx="150" cy="100" r="80" fill="#E3F2FD" opacity="0.8"/>
+                                <rect x="60" y="70" width="50" height="90" rx="10" fill="#1565C0"/>
+                                <circle cx="85" cy="50" r="22" fill="#FFD54F"/>
+                                <path d="M70 50 Q85 30 100 50" stroke="#0D47A1" stroke-width="4" fill="none"/>
+                                <rect x="70" y="90" width="30" height="40" fill="#FFFFFF"/>
+                                <circle cx="80" cy="48" r="5" stroke="#000" stroke-width="1.5" fill="none"/>
+                                <circle cx="90" cy="48" r="5" stroke="#000" stroke-width="1.5" fill="none"/>
+                                <rect x="190" y="80" width="45" height="80" rx="10" fill="#4FC3F7"/>
+                                <circle cx="212.5" cy="60" r="20" fill="#FFD54F"/>
+                                <rect x="220" y="95" width="15" height="35" rx="4" fill="#FFB300"/>
+                                <path d="M120 40 Q150 20 170 40 Q180 50 160 60 Q140 65 130 55 Z" fill="#FFFFFF" stroke="#1565C0" stroke-width="2"/>
+                                <text x="132" y="48" font-size="10" font-weight="bold" fill="#0D47A1">Selamat Pagi Pak!</text>
+                            </svg>
+                        </div>
+
+                        <!-- Daily Tip Box -->
+                        <div class="w-full bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-md text-left space-y-2 border-l-4 border-sapaaccent-500">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-sapaaccent-600 uppercase tracking-wider flex items-center space-x-1">
+                                    <i class="fas fa-lightbulb"></i> <span>Tips Hari Ini</span>
+                                </span>
+                                <button onclick="shuffleDailyTip()" class="text-xs text-sapablue-600 dark:text-sapablue-300 hover:underline"><i class="fas fa-sync-alt"></i> Acak</button>
+                            </div>
+                            <p id="daily-tip-text" class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 font-medium italic">
+                                "Selalu awali pesan kepada dosen dengan salam dan sapaan hormat seperti 'Selamat Pagi Bapak/Ibu' sebelum menyampaikan maksud utama."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shortcut Navigation Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-4">
+                <button onclick="switchMainTab('interaktif', 'sapa-check')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition text-center space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-100 dark:bg-slate-700 text-sapablue-700 dark:text-sapablue-300 flex items-center justify-center mx-auto font-bold text-base">
+                        <i class="fas fa-spell-check"></i>
+                    </div>
+                    <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">SAPA Check</span>
+                </button>
+                <button onclick="switchMainTab('interaktif', 'roda-situasi')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition text-center space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-slate-700 text-purple-600 dark:text-purple-300 flex items-center justify-center mx-auto font-bold text-base">
+                        <i class="fas fa-dharmachakra"></i>
+                    </div>
+                    <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">Roda Situasi</span>
+                </button>
+                <button onclick="switchMainTab('interaktif', 'ubah-kalimat')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition text-center space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mx-auto font-bold text-base">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">Ubah Kalimat</span>
+                </button>
+                <button onclick="switchMainTab('eksklusif', 'letter-builder')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition text-center space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-slate-700 text-amber-600 dark:text-amber-300 flex items-center justify-center mx-auto font-bold text-base">
+                        <i class="fas fa-file-signature"></i>
+                    </div>
+                    <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">Letter Builder</span>
+                </button>
+                <button onclick="switchMainTab('eksklusif', 'jam-ideal')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition text-center space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-slate-700 text-emerald-600 dark:text-emerald-300 flex items-center justify-center mx-auto font-bold text-base">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">Kalkulator Jam</span>
+                </button>
+                <button onclick="switchMainTab('kuis')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition text-center space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 dark:bg-slate-700 text-rose-600 dark:text-rose-300 flex items-center justify-center mx-auto font-bold text-base">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">Kuis Etika</span>
+                </button>
+            </div>
+
+            <!-- Motivation Banner -->
+            <div class="bg-gradient-to-r from-sapablue-900 to-sapablue-700 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-full bg-sapaaccent-400 text-sapablue-900 flex items-center justify-center text-2xl font-bold flex-shrink-0">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-base sm:text-lg">"Mulai dari Sapaan, Tumbuhkan Kesantunan."</h4>
+                        <p class="text-xs sm:text-sm text-sapablue-100">Etika berkomunikasi mencerminkan intelektual dan profesionalisme seorang mahasiswa unggul.</p>
+                    </div>
+                </div>
+                <button onclick="switchMainTab('kuis')" class="px-5 py-2.5 bg-sapaaccent-400 hover:bg-sapaaccent-500 text-slate-900 font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex-shrink-0">
+                    Uji Pemahaman Etikamu <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= VIEW 2: MATERI EDUKASI UTAMA ================= -->
+        <div id="view-materi" class="tab-view space-y-6">
+            <!-- Sub-Nav DEDIKASI Sub-Tab Materi -->
+            <div class="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-wrap gap-1">
+                <button id="sub-materi-etika" onclick="switchSubTab('materi', 'etika')" class="sub-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-sapablue-700 text-white">1. Etika Kampus</button>
+                <button id="sub-materi-komunikasi" onclick="switchSubTab('materi', 'komunikasi')" class="sub-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">2. Etika Komunikasi</button>
+                <button id="sub-materi-chat" onclick="switchSubTab('materi', 'chat')" class="sub-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">3. Panduan Chat Dosen</button>
+                <button id="sub-materi-contoh" onclick="switchSubTab('materi', 'contoh')" class="sub-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">4. Contoh Pesan</button>
+                <button id="sub-materi-kesalahan" onclick="switchSubTab('materi', 'kesalahan')" class="sub-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">5. 9 Kesalahan</button>
+                <button id="sub-materi-template" onclick="switchSubTab('materi', 'template')" class="sub-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">6. Template Ready</button>
+            </div>
+
+            <!-- Sub Content 1: Etika Kampus -->
+            <div id="subview-materi-etika" class="sub-view space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-3">
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-3">
+                        <i class="fas fa-university text-sapablue-600"></i>
+                        <span>1. Etika di Lingkungan Kampus</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">Landasan norma, sikap sopan santun, dan tata krama akademis di universitas.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div class="w-12 h-12 bg-sapablue-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-sapablue-700 dark:text-sapablue-300 text-xl font-bold mb-4">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Pengertian & Tujuan</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Etika kampus adalah tatanan nilai, moral, dan aturan sopan santun yang mengatur interaksi civitas akademika demi terciptanya suasana perkuliahan yang kondusif, saling menghargai, dan profesional.
+                        </p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div class="w-12 h-12 bg-emerald-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-bold mb-4">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Manfaat Utama</h3>
+                        <ul class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li>Membangun reputasi diri yang positif.</li>
+                            <li>Mempermudah bimbingan & urusan akademik.</li>
+                            <li>Menghindari kesalahpahaman dengan dosen.</li>
+                            <li>Memperluas jaringan profesional.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div class="w-12 h-12 bg-amber-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400 text-xl font-bold mb-4">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Pilar Etika Kampus</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-2">Mencakup 3 aspek hubungan penting:</p>
+                        <span class="inline-block bg-sapablue-50 dark:bg-slate-700 text-sapablue-800 dark:text-sapablue-200 text-xs px-2.5 py-1 rounded-md font-medium mr-1 mb-1">Terhadap Dosen</span>
+                        <span class="inline-block bg-sapablue-50 dark:bg-slate-700 text-sapablue-800 dark:text-sapablue-200 text-xs px-2.5 py-1 rounded-md font-medium mr-1 mb-1">Sesama Mahasiswa</span>
+                        <span class="inline-block bg-sapablue-50 dark:bg-slate-700 text-sapablue-800 dark:text-sapablue-200 text-xs px-2.5 py-1 rounded-md font-medium">Saat Perkuliahan</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub Content 2: Etika Komunikasi -->
+            <div id="subview-materi-komunikasi" class="sub-view hidden space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-3">
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-3">
+                        <i class="fas fa-comments text-sapablue-600"></i>
+                        <span>2. Etika Komunikasi Digital & Lisan</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">Standar komunikasi langsung, WhatsApp, Email, dan etika teman sebaya.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <i class="fas fa-users text-2xl text-sapablue-600 mb-3"></i>
+                        <h3 class="font-bold text-base mb-1">Komunikasi Langsung</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Tatap mata lawan bicara, senyum, gunakan bahasa tubuh yang sopan, dan jangan memotong pembicaraan dosen.</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <i class="fab fa-whatsapp text-2xl text-emerald-500 mb-3"></i>
+                        <h3 class="font-bold text-base mb-1">WhatsApp / Instant Chat</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Gunakan Bahasa Indonesia baku, hindari singkatan alay, kirim pada jam kerja, dan ikuti 6 langkah pesan.</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <i class="fas fa-envelope text-2xl text-rose-500 mb-3"></i>
+                        <h3 class="font-bold text-base mb-1">Email Formal</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Wajib isi Subjek Email dengan jelas, gunakan salam pembuka resmi, lampirkan dokumen dengan nama file rapi.</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <i class="fas fa-user-friends text-2xl text-amber-500 mb-3"></i>
+                        <h3 class="font-bold text-base mb-1">Komunikasi Teman</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Saling menghargai pendapat saat diskusi, hindari bercanda berlebihan di grup formal kelas, dan hindari toxic speech.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub Content 3: Chat Dosen -->
+            <div id="subview-materi-chat" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 space-y-6">
+                <div class="border-b border-slate-100 dark:border-slate-700 pb-3">
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-3">
+                        <i class="fas fa-list-ol text-sapaaccent-600"></i>
+                        <span>3. Panduan Chat Dosen (6 Langkah Emas)</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">Struktur formula pesan ideal saat menghubungi dosen via WhatsApp/Email.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-xl bg-sapablue-50 dark:bg-slate-700/50 border border-sapablue-100 dark:border-slate-600">
+                        <span class="w-7 h-7 rounded-full bg-sapablue-700 text-white font-bold text-xs flex items-center justify-center mb-2">1</span>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1">Waktu yang Tepat</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Kirim pesan pada jam kerja (Senin–Jumat, pukul 08.00–16.00 WIB). Hindari malam hari atau hari libur.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-sapablue-50 dark:bg-slate-700/50 border border-sapablue-100 dark:border-slate-600">
+                        <span class="w-7 h-7 rounded-full bg-sapablue-700 text-white font-bold text-xs flex items-center justify-center mb-2">2</span>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1">Salam & Sapaan</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Awali dengan salam sopan. Contoh: <em>"Selamat pagi Bapak Dr. Wijaya,"</em>.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-sapablue-50 dark:bg-slate-700/50 border border-sapablue-100 dark:border-slate-600">
+                        <span class="w-7 h-7 rounded-full bg-sapablue-700 text-white font-bold text-xs flex items-center justify-center mb-2">3</span>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1">Perkenalan Diri</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Sebutkan nama lengkap, NIM, serta kelas/mata kuliah yang diampu dosen tersebut.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-sapablue-50 dark:bg-slate-700/50 border border-sapablue-100 dark:border-slate-600">
+                        <span class="w-7 h-7 rounded-full bg-sapablue-700 text-white font-bold text-xs flex items-center justify-center mb-2">4</span>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1">Permohonan Maaf</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Gunakan kalimat kerendahan hati seperti: <em>"Mohon maaf mengganggu waktu Bapak/Ibu,"</em>.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-sapablue-50 dark:bg-slate-700/50 border border-sapablue-100 dark:border-slate-600">
+                        <span class="w-7 h-7 rounded-full bg-sapablue-700 text-white font-bold text-xs flex items-center justify-center mb-2">5</span>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1">Maksud & Tujuan</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Sampaikan keperluan secara ringkas, jelas, dan tidak berbelit-belit.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-sapablue-50 dark:bg-slate-700/50 border border-sapablue-100 dark:border-slate-600">
+                        <span class="w-7 h-7 rounded-full bg-sapablue-700 text-white font-bold text-xs flex items-center justify-center mb-2">6</span>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1">Penutup & Terima Kasih</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Akhiri dengan ucapan terima kasih dan salam penutup santun.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub Content 4: Contoh Pesan -->
+            <div id="subview-materi-contoh" class="sub-view hidden space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-3">
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-3">
+                        <i class="fas fa-balance-scale text-sapablue-600"></i>
+                        <span>4. Contoh Pesan (Kurang Tepat vs Lebih Tepat)</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">Pelajari perbandingan nyata untuk 4 situasi utama perkuliahan.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button onclick="switchExampleTab('tanya')" id="tab-ex-tanya" class="ex-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-sapablue-700 text-white transition">Bertanya Perkuliahan</button>
+                    <button onclick="switchExampleTab('izin')" id="tab-ex-izin" class="ex-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sapablue-100 transition">Izin Tidak Hadir</button>
+                    <button onclick="switchExampleTab('konsul')" id="tab-ex-konsul" class="ex-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sapablue-100 transition">Konsultasi Bimbingan</button>
+                    <button onclick="switchExampleTab('tugas')" id="tab-ex-tugas" class="ex-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sapablue-100 transition">Konfirmasi Tugas</button>
+                </div>
+                <div id="example-card-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+
+            <!-- Sub Content 5: Kesalahan Komunikasi -->
+            <div id="subview-materi-kesalahan" class="sub-view hidden space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-3">
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-3">
+                        <i class="fas fa-exclamation-triangle text-rose-500"></i>
+                        <span>5. 9 Kesalahan Komunikasi yang Sering Terjadi</span>
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">1. Mengirim "P" atau "Ping"</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Sangat tidak sopan dan terkesan menuntut respon cepat tanpa salam.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">2. Tanpa Identitas Diri</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Dosen mengajar ratusan mahasiswa, wajib sebutkan nama, NIM & kelas.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">3. Chat di Luar Jam Kerja</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Menghubungi di atas pukul 20.00 WIB atau hari libur mengganggu waktu pribadi dosen.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">4. Menuntut Respon Cepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Kata seperti "Fast res ya pak" tidak menghargai kesibukan dosen.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">5. Pesan Kurang Jelas</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">"Pak mau tanya soal kemarin" tanpa menyebutkan mata kuliah/topik spesifik.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">6. Bahasa Gaul / Singkatan</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Menggunakan kata "gmn", "tq", "brp", "yg" mengurangi profesionalisme.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">7. Tanda Baca Agresif</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Penggunaan tanda seru (!!!) atau KAPITAL berlebihan terkesan membentak.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">8. Mengabaikan Penutup</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Langsung mengakhiri percakapan tanpa ucapan terima kasih.</p>
+                    </div>
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-4 rounded-xl border border-rose-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-rose-600 uppercase">9. Gelar / Nama Dosen Salah</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">Salah menuliskan nama atau gelar akademis dosen merupakan bentuk ketidaktelitian.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub Content 6: Template Ready -->
+            <div id="subview-materi-template" class="sub-view hidden space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-3">
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-3">
+                        <i class="fas fa-file-alt text-sapablue-600"></i>
+                        <span>6. Template Pesan Siap Salin</span>
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-sapablue-700 dark:text-sapablue-300 uppercase bg-sapablue-50 dark:bg-slate-700 px-2 py-0.5 rounded">Tanya Materi</span>
+                            <p id="tpl-text-1" class="text-xs text-slate-700 dark:text-slate-200 mt-2 italic leading-relaxed">
+                                "Selamat pagi Bapak Dr. Wijaya. Saya Andi (NIM 12345) kelas Etika Komunikasi A. Mohon maaf mengganggu waktu Bapak. Saya izin bertanya terkait slide bab 4 materi kemarin... Terima kasih banyak Pak."
+                            </p>
+                        </div>
+                        <button onclick="copyTextById('tpl-text-1')" class="mt-2 w-full py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-lg text-xs hover:bg-sapablue-100 transition">
+                            <i class="fas fa-copy"></i> Salin Template
+                        </button>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-emerald-600 uppercase bg-emerald-50 dark:bg-slate-700 px-2 py-0.5 rounded">Izin Sakit</span>
+                            <p id="tpl-text-2" class="text-xs text-slate-700 dark:text-slate-200 mt-2 italic leading-relaxed">
+                                "Selamat pagi Ibu Anita, M.Sc. Saya Rina (NIM 54321) kelas Komunikasi B. Mohon maaf mengganggu, saya bermaksud menginformasikan tidak dapat hadir kuliah hari ini dikarenakan sakit (surat dokter terlampir). Terima kasih Ibu."
+                            </p>
+                        </div>
+                        <button onclick="copyTextById('tpl-text-2')" class="mt-2 w-full py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-lg text-xs hover:bg-sapablue-100 transition">
+                            <i class="fas fa-copy"></i> Salin Template
+                        </button>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-purple-600 uppercase bg-purple-50 dark:bg-slate-700 px-2 py-0.5 rounded">Jadwal Bimbingan</span>
+                            <p id="tpl-text-3" class="text-xs text-slate-700 dark:text-slate-200 mt-2 italic leading-relaxed">
+                                "Selamat siang Bapak Prof. Bambang. Saya Budi (NIM 98765) mahasiswa bimbingan skripsi Bapak. Mohon maaf mengganggu, jika Bapak berkenan, kapan kiranya saya dapat menemui Bapak untuk konsultasi Bab 2? Terima kasih Pak."
+                            </p>
+                        </div>
+                        <button onclick="copyTextById('tpl-text-3')" class="mt-2 w-full py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-lg text-xs hover:bg-sapablue-100 transition">
+                            <i class="fas fa-copy"></i> Salin Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW 3: 7 FITUR INTERAKTIF UTAMA ================= -->
+        <div id="view-interaktif" class="tab-view space-y-6">
+            <!-- Sub Navigation Bar 7 Fitur Interaktif -->
+            <div class="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-wrap gap-1">
+                <button id="sub-interaktif-sapa-check" onclick="switchSubTab('interaktif', 'sapa-check')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-sapablue-700 text-white">1. SAPAin Check</button>
+                <button id="sub-interaktif-dilemma" onclick="switchSubTab('interaktif', 'dilemma')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">2. Situasi Tak Terduga</button>
+                <button id="sub-interaktif-detective" onclick="switchSubTab('interaktif', 'detective')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">3. Detektif Bahasa</button>
+                <button id="sub-interaktif-roda-situasi" onclick="switchSubTab('interaktif', 'roda-situasi')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">4. Roda Situasi</button>
+                <button id="sub-interaktif-ubah-kalimat" onclick="switchSubTab('interaktif', 'ubah-kalimat')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">5. Ubah Kalimatku</button>
+                <button id="sub-interaktif-peta-etika" onclick="switchSubTab('interaktif', 'peta-etika')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">6. Peta Etika</button>
+                <button id="sub-interaktif-gaya-komunikasi" onclick="switchSubTab('interaktif', 'gaya-komunikasi')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">7. Kenali Gaya</button>
+            </div>
+
+            <!-- Fitur 1: SAPAin Check & SAPA Score -->
+            <div id="subview-interaktif-sapa-check" class="sub-view bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-700 text-white flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">SAPAin Check & SAPA Score</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Analisis otomatis kelayakan pesan dengan mode khusus: Dosen Baru / Belum Akrab vs Dosen Sudah Dikenal / Akrab.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Konteks Hubungan dengan Dosen:</label>
+                            <select id="sapa-context-mode" class="p-1.5 text-xs rounded-xl bg-sapablue-50 dark:bg-slate-700 border border-sapablue-200 dark:border-slate-600 font-bold text-sapablue-800 dark:text-sapablue-200">
+                                <option value="baru">Dosen Baru / Belum Akrab (Perlu NIM & Formal)</option>
+                                <option value="akrab">Sudah Dikenal / Dosen Pembimbing (Lebih Cair & Langsung Inti)</option>
+                            </select>
+                        </div>
+                        <textarea id="sapa-check-input" rows="5" class="w-full p-4 text-xs sm:text-sm rounded-2xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-sapablue-600 text-slate-800 dark:text-slate-100" placeholder="Contoh untuk akrab: 'Selamat pagi Pak, izin melanjutkan diskusi bimbingan bab 2 kemarin...'"></textarea>
+                        <div class="flex space-x-2">
+                            <button onclick="analyzeSAPAMessage()" class="px-5 py-2.5 bg-sapablue-700 hover:bg-sapablue-900 text-white font-bold rounded-xl text-xs shadow transition">
+                                <i class="fas fa-search-plus mr-1"></i> Periksa Pesan & Hitung Skor
+                            </button>
+                            <button onclick="clearSAPACheck()" class="px-3 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-300 transition">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 bg-sapablue-50 dark:bg-slate-700/40 rounded-2xl p-5 border border-sapablue-100 dark:border-slate-600 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Hasil Evaluasi SAPA:</span>
+                                <div id="sapa-score-badge" class="px-3 py-1 bg-slate-300 text-slate-800 rounded-full font-extrabold text-sm">Skor: -</div>
+                            </div>
+                            <div id="sapa-checklist" class="space-y-1.5 text-xs">
+                                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Salam & Sapaan Sopan</span></div>
+                                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Identitas / Konteks Relasi</span></div>
+                                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Kesantunan Berbahasa</span></div>
+                                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Kejelasan Tujuan Utama</span></div>
+                                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Penutup & Terima Kasih</span></div>
+                            </div>
+                            <div id="sapa-feedback" class="mt-3 text-xs text-slate-600 dark:text-slate-300 italic bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                                Pilih mode konteks di atas lalu klik "Periksa Pesan".
+                            </div>
+                        </div>
+                        <button onclick="copySAPAMessage()" class="mt-3 w-full py-2 bg-sapablue-600 hover:bg-sapablue-700 text-white font-bold rounded-xl text-xs shadow transition">
+                            <i class="fas fa-copy mr-1"></i> Salin Hasil Pesan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fitur 2: Situasi Tak Terduga -->
+            <div id="subview-interaktif-dilemma" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapaaccent-500 text-slate-900 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Situasi Tak Terduga (Simulasi Dilema Kampus)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Pilih tindakan terbaik saat menghadapi dilema nyata di lingkungan kampus.</p>
+                    </div>
+                </div>
+                <div class="bg-sapablue-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-sapablue-100 dark:border-slate-600 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span id="dilemma-step-title" class="text-xs font-bold text-sapablue-700 dark:text-sapablue-300 uppercase">Skenario 1 dari 5</span>
+                        <div class="space-x-1">
+                            <button onclick="prevDilemma()" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-xs rounded-lg font-bold shadow-sm"><i class="fas fa-chevron-left"></i></button>
+                            <button onclick="nextDilemma()" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-xs rounded-lg font-bold shadow-sm"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <p id="dilemma-question" class="text-sm font-bold text-slate-900 dark:text-white">Loading Skenario...</p>
+                    <div id="dilemma-options" class="space-y-2"></div>
+                    <div id="dilemma-feedback-box" class="hidden bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <span id="dilemma-rating-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
+                            <span id="dilemma-impact-text" class="text-xs font-semibold text-slate-600 dark:text-slate-300"></span>
+                        </div>
+                        <p id="dilemma-reason-text" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+                        <div class="p-2.5 bg-sapablue-50 dark:bg-slate-700 rounded-lg text-xs font-medium text-sapablue-900 dark:text-sapablue-200">
+                            <strong>Contoh Respons Tepat:</strong> <span id="dilemma-model-response"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fitur 3: Detektif Bahasa -->
+            <div id="subview-interaktif-detective" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Detektif Bahasa (Spot The Error Game)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Klik kata atau frasa yang tidak sopan / kurang tepat dalam kalimat berikut!</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-700/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-600 space-y-4 text-center">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400">
+                        <span>Level: <span id="detective-level">1</span>/3</span>
+                        <span>Skor Detektif: <span id="detective-score" class="text-emerald-600 font-extrabold">0</span></span>
+                    </div>
+                    <div id="detective-words-container" class="flex flex-wrap items-center justify-center gap-2 py-4"></div>
+                    <div id="detective-result-box" class="hidden p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left space-y-2">
+                        <div class="flex items-center space-x-2 text-xs font-bold text-emerald-600">
+                            <i class="fas fa-check-circle text-base"></i>
+                            <span>Tepat Sekali! Anda Menemukan Kesalahan Bahasa:</span>
+                        </div>
+                        <p id="detective-explanation" class="text-xs text-slate-600 dark:text-slate-300"></p>
+                        <div class="p-2.5 bg-emerald-50 dark:bg-slate-700 text-emerald-900 dark:text-emerald-200 rounded-lg text-xs">
+                            <strong>Alternatif Lebih Tepat:</strong> <span id="detective-alternative"></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center space-x-3">
+                        <button onclick="nextDetectiveLevel()" class="px-5 py-2 bg-sapablue-700 hover:bg-sapablue-900 text-white font-bold rounded-xl text-xs transition">
+                            Level Selanjutnya <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                        <button onclick="resetDetectiveGame()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-300 transition">
+                            <i class="fas fa-redo"></i> Main Lagi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fitur 4: Roda Situasi Kampus -->
+            <div id="subview-interaktif-roda-situasi" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Roda Situasi Kampus</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Putar roda acak untuk mendapatkan skenario etika lengkap dengan rincian sikap yang harus dilakukan!</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-5 flex flex-col items-center justify-center relative">
+                        <div class="relative">
+                            <div class="w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[24px] border-t-rose-600 absolute -top-4 left-1/2 -translate-x-1/2 z-10"></div>
+                            <canvas id="wheel-canvas" width="280" height="280" class="rounded-full shadow-lg border-4 border-white dark:border-slate-700"></canvas>
+                        </div>
+                        <button onclick="spinWheel()" id="spin-btn" class="mt-4 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-sapablue-700 text-white font-extrabold rounded-full shadow-lg hover:shadow-xl transform active:scale-95 transition text-xs uppercase tracking-wider">
+                            <i class="fas fa-sync-alt mr-1"></i> Putar Roda!
+                        </button>
+                    </div>
+                    <div class="md:col-span-7 bg-sapablue-50 dark:bg-slate-700/40 p-5 rounded-2xl border border-sapablue-100 dark:border-slate-600 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span id="wheel-category-badge" class="px-3 py-1 bg-purple-100 dark:bg-slate-800 text-purple-700 dark:text-purple-300 font-bold rounded-full text-xs">Klik Putar Roda</span>
+                        </div>
+                        <h4 id="wheel-title" class="font-bold text-base text-slate-900 dark:text-white">Putar roda untuk memulai simulasi</h4>
+                        <p id="wheel-desc" class="text-xs text-slate-600 dark:text-slate-300">Hasil putaran akan memberikan panduan tindakan konkret, hal yang harus dihindari, serta contoh kalimat.</p>
+                        <div id="wheel-details" class="hidden space-y-2 text-xs">
+                            <div class="p-2.5 bg-sapablue-100 dark:bg-slate-800 border-l-4 border-sapablue-600 rounded">
+                                <strong class="text-sapablue-900 dark:text-sapablue-300 block mb-0.5"><i class="fas fa-tasks mr-1"></i> Sikap yang Harus Dilakukan (Action Steps):</strong>
+                                <span id="wheel-action" class="block text-slate-800 dark:text-slate-200 font-medium"></span>
+                            </div>
+                            <div class="p-2.5 bg-emerald-50 dark:bg-slate-800 border-l-4 border-emerald-500 rounded">
+                                <strong class="text-emerald-700 dark:text-emerald-400">Hal Diterapkan:</strong>
+                                <span id="wheel-do" class="block text-slate-700 dark:text-slate-300"></span>
+                            </div>
+                            <div class="p-2.5 bg-rose-50 dark:bg-slate-800 border-l-4 border-rose-500 rounded">
+                                <strong class="text-rose-700 dark:text-rose-400">Hal Dihindari:</strong>
+                                <span id="wheel-dont" class="block text-slate-700 dark:text-slate-300"></span>
+                            </div>
+                            <div class="p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded">
+                                <strong class="text-sapablue-700 dark:text-sapablue-300">Contoh Kalimat:</strong>
+                                <p id="wheel-example" class="italic text-slate-800 dark:text-slate-200 mt-0.5"></p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <button onclick="copyWheelExample()" class="px-3 py-1.5 bg-sapablue-700 text-white font-bold rounded-lg text-xs hover:bg-sapablue-900 transition">
+                                <i class="fas fa-copy"></i> Salin Contoh Kalimat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fitur 5: Ubah Kalimatku -->
+            <div id="subview-interaktif-ubah-kalimat" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Ubah Kalimatku (Sentence Tone Converter)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Ubah ucapan santai / kurang formal menjadi 3 variasi kalimat sopan & akademis.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-5 space-y-3">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Kalimat Bebas Asli Anda:</label>
+                        <textarea id="converter-input" rows="5" class="w-full p-4 text-xs sm:text-sm rounded-2xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-slate-800 dark:text-slate-100" placeholder="Ketik apa saja, misal: 'pak nilai tugas saya kok belum keluar'"></textarea>
+                        <div class="flex space-x-2">
+                            <button onclick="convertSentence()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow transition">
+                                <i class="fas fa-magic mr-1"></i> Transformasi Kalimat
+                            </button>
+                            <button onclick="clearConverter()" class="px-3 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-300 transition">
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7 space-y-3">
+                        <div class="p-3.5 bg-indigo-50/60 dark:bg-slate-700/50 rounded-xl border border-indigo-100 dark:border-slate-600 relative">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-extrabold text-indigo-700 dark:text-indigo-300">1. Formal Santun</span>
+                                <button onclick="copyTextById('output-formal')" class="text-xs text-indigo-600 hover:underline"><i class="fas fa-copy"></i> Salin</button>
+                            </div>
+                            <p id="output-formal" class="text-xs text-slate-700 dark:text-slate-200 italic">Hasil kalimat akan muncul di sini...</p>
+                        </div>
+                        <div class="p-3.5 bg-sapablue-50/60 dark:bg-slate-700/50 rounded-xl border border-sapablue-100 dark:border-slate-600 relative">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-extrabold text-sapablue-700 dark:text-sapablue-300">2. Semi-Formal Supel</span>
+                                <button onclick="copyTextById('output-semiformal')" class="text-xs text-sapablue-600 hover:underline"><i class="fas fa-copy"></i> Salin</button>
+                            </div>
+                            <p id="output-semiformal" class="text-xs text-slate-700 dark:text-slate-200 italic">Hasil kalimat akan muncul di sini...</p>
+                        </div>
+                        <div class="p-3.5 bg-slate-100 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 relative">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-extrabold text-slate-800 dark:text-slate-200">3. Akademis Resmi (Email)</span>
+                                <button onclick="copyTextById('output-academic')" class="text-xs text-slate-600 hover:underline"><i class="fas fa-copy"></i> Salin</button>
+                            </div>
+                            <p id="output-academic" class="text-xs text-slate-700 dark:text-slate-200 italic">Hasil kalimat akan muncul di sini...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fitur 6: Peta Etika Kampus -->
+            <div id="subview-interaktif-peta-etika" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Peta Etika Kampus (Interactive Map)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Klik lokasi pada peta kampus untuk mempelajari etika spesifik di tempat tersebut!</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                    <button onclick="showVenueEtiquette('kelas')" class="venue-btn p-3 rounded-2xl bg-sapablue-50 dark:bg-slate-700 border-2 border-sapablue-200 dark:border-slate-600 hover:border-sapablue-600 flex flex-col items-center text-center transition">
+                        <i class="fas fa-chalkboard-teacher text-2xl text-sapablue-600 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Ruang Kelas</span>
+                    </button>
+                    <button onclick="showVenueEtiquette('dosen')" class="venue-btn p-3 rounded-2xl bg-sapablue-50 dark:bg-slate-700 border-2 border-sapablue-200 dark:border-slate-600 hover:border-sapablue-600 flex flex-col items-center text-center transition">
+                        <i class="fas fa-user-tie text-2xl text-sapablue-800 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Ruang Dosen</span>
+                    </button>
+                    <button onclick="showVenueEtiquette('perpus')" class="venue-btn p-3 rounded-2xl bg-sapablue-50 dark:bg-slate-700 border-2 border-sapablue-200 dark:border-slate-600 hover:border-sapablue-600 flex flex-col items-center text-center transition">
+                        <i class="fas fa-book-reader text-2xl text-amber-600 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Perpustakaan</span>
+                    </button>
+                    <button onclick="showVenueEtiquette('kantin')" class="venue-btn p-3 rounded-2xl bg-sapablue-50 dark:bg-slate-700 border-2 border-sapablue-200 dark:border-slate-600 hover:border-sapablue-600 flex flex-col items-center text-center transition">
+                        <i class="fas fa-utensils text-2xl text-emerald-600 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Kantin Kampus</span>
+                    </button>
+                    <button onclick="showVenueEtiquette('parkir')" class="venue-btn p-3 rounded-2xl bg-sapablue-50 dark:bg-slate-700 border-2 border-sapablue-200 dark:border-slate-600 hover:border-sapablue-600 flex flex-col items-center text-center transition">
+                        <i class="fas fa-parking text-2xl text-slate-600 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Area Parkir</span>
+                    </button>
+                    <button onclick="showVenueEtiquette('aula')" class="venue-btn p-3 rounded-2xl bg-sapablue-50 dark:bg-slate-700 border-2 border-sapablue-200 dark:border-slate-600 hover:border-sapablue-600 flex flex-col items-center text-center transition">
+                        <i class="fas fa-landmark text-2xl text-purple-600 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Aula Utama</span>
+                    </button>
+                    <button onclick="showVenueEtiquette('sekre')" class="venue-btn p-3 rounded-2xl bg-sapablue-50 dark:bg-slate-700 border-2 border-sapablue-200 dark:border-slate-600 hover:border-sapablue-600 flex flex-col items-center text-center transition">
+                        <i class="fas fa-users-cog text-2xl text-rose-600 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Sekre Ormawa</span>
+                    </button>
+                </div>
+                <div id="venue-info-box" class="bg-sapablue-50 dark:bg-slate-700/40 p-5 rounded-2xl border border-sapablue-100 dark:border-slate-600 space-y-3">
+                    <h4 id="venue-name" class="font-bold text-lg text-sapablue-900 dark:text-sapablue-200">Pilih Lokasi Kampus di Atas</h4>
+                    <p id="venue-desc" class="text-xs text-slate-600 dark:text-slate-300">Klik salah satu tombol ruangan untuk melihat aturan etika, hal yang harus dilarang, serta tips praktisnya.</p>
+                </div>
+            </div>
+
+            <!-- Fitur 7: Kenali Gaya Komunikasimu -->
+            <div id="subview-interaktif-gaya-komunikasi" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-pink-600 text-white flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Kenali Gaya Komunikasimu (Tes Profil Etika)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Jawab pertanyaan cepat untuk mengetahui tipe karakter komunikasi kampus Anda!</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-700/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-600 space-y-4">
+                    <div id="style-quiz-question-container" class="space-y-4"></div>
+                    <div id="style-quiz-result-container" class="hidden space-y-4 text-center">
+                        <div class="inline-block p-4 bg-pink-100 dark:bg-slate-800 rounded-full text-pink-600 text-3xl mb-2">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <h4 id="style-result-title" class="font-extrabold text-xl text-slate-900 dark:text-white"></h4>
+                        <p id="style-result-desc" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto leading-relaxed"></p>
+                        <div id="style-result-tips" class="p-4 bg-white dark:bg-slate-800 rounded-xl text-xs text-left max-w-md mx-auto border border-slate-200 dark:border-slate-700 space-y-1"></div>
+                        <button onclick="resetStyleQuiz()" class="px-5 py-2.5 bg-pink-600 text-white font-bold rounded-xl text-xs hover:bg-pink-700 transition">
+                            <i class="fas fa-redo"></i> Tes Ulang Gaya Komunikasi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW 4: 6 FITUR EKSLUSIF ================= -->
+        <div id="view-eksklusif" class="tab-view space-y-6">
+            <!-- Sub Navigation Bar 6 Fitur Eksklusif -->
+            <div class="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-wrap gap-1">
+                <button id="sub-eksklusif-persona-sim" onclick="switchSubTab('eksklusif', 'persona-sim')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-sapablue-700 text-white">A. Simulator Persona</button>
+                <button id="sub-eksklusif-jam-ideal" onclick="switchSubTab('eksklusif', 'jam-ideal')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">B. Jam Ideal Chat</button>
+                <button id="sub-eksklusif-letter-builder" onclick="switchSubTab('eksklusif', 'letter-builder')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">C. Letter Builder</button>
+                <button id="sub-eksklusif-follow-up" onclick="switchSubTab('eksklusif', 'follow-up')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">D. Smart Follow-Up</button>
+                <button id="sub-eksklusif-etika-ujian" onclick="switchSubTab('eksklusif', 'etika-ujian')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">E. Etika Ujian & Sidang</button>
+                <button id="sub-eksklusif-badge-gen" onclick="switchSubTab('eksklusif', 'badge-gen')" class="sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">F. Ethical Badge</button>
+            </div>
+
+            <!-- Tool A: Simulator Persona Dosen -->
+            <div id="subview-eksklusif-persona-sim" class="sub-view bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-900 text-sapaaccent-400 flex items-center justify-center font-bold text-lg">A</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Simulator Persona Dosen</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Simulasi percakapan pesan dengan berbagai karakter kepribadian dosen.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-4 space-y-3">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pilih Persona Dosen:</label>
+                        <select id="persona-select" onchange="changePersona()" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold text-slate-800 dark:text-slate-100">
+                            <option value="formal">Dr. Wijaya (Formal & Strict)</option>
+                            <option value="supel">Bu Anita, M.Sc. (Supel & Santai)</option>
+                            <option value="sibuk">Prof. Bambang (Super Sibuk)</option>
+                        </select>
+                        <div id="persona-info" class="p-3 bg-sapablue-50 dark:bg-slate-700/50 rounded-xl text-xs space-y-1">
+                            <span class="font-bold text-sapablue-700 dark:text-sapablue-300">Karakteristik:</span>
+                            <p id="persona-desc-text" class="text-slate-600 dark:text-slate-300">Sangat memperhatikan tata bahasa baku, perkenalan NIM, dan jam kirim.</p>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-8 bg-slate-100 dark:bg-slate-900 rounded-2xl p-4 flex flex-col h-80 justify-between">
+                        <div id="sim-chat-box" class="space-y-3 overflow-y-auto pr-2 text-xs">
+                            <div class="flex items-start space-x-2">
+                                <div class="w-7 h-7 rounded-full bg-sapablue-700 text-white flex items-center justify-center font-bold text-[10px]">D</div>
+                                <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[80%] text-slate-800 dark:text-slate-100">
+                                    Selamat datang di simulasi chat! Silahkan kirim pesan perkenalan atau pertanyaan Anda.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+                            <input type="text" id="sim-chat-input" placeholder="Ketik pesan simulasi..." class="flex-grow px-4 py-2 rounded-xl text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700 focus:outline-none">
+                            <button onclick="sendSimChat()" class="px-4 py-2 bg-sapablue-700 hover:bg-sapablue-900 text-white font-bold rounded-xl text-xs shadow transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool B: Kalkulator Jam Ideal Chat Dosen -->
+            <div id="subview-eksklusif-jam-ideal" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-900 text-sapaaccent-400 flex items-center justify-center font-bold text-lg">B</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Kalkulator Jam Ideal Chat Dosen</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Cek apakah waktu saat ini tergolong aman, rawan, atau terlarang untuk pesan dosen.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-5 bg-slate-50 dark:bg-slate-700/50 p-6 rounded-2xl text-center space-y-3">
+                        <div id="live-clock-time" class="text-3xl sm:text-4xl font-extrabold text-sapablue-900 dark:text-sapablue-200">00:00:00</div>
+                        <span id="live-clock-day" class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Hari Ini</span>
+                        <div class="pt-2">
+                            <label class="text-xs text-slate-500 block mb-1">Cek Waktu Manual (Jam):</label>
+                            <input type="time" id="manual-time-picker" onchange="checkCustomTime(this.value)" class="p-2 text-xs rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
+                        </div>
+                    </div>
+                    <div class="md:col-span-7 space-y-3">
+                        <div id="ideal-status-box" class="p-4 rounded-2xl border flex items-center space-x-4 bg-emerald-50 border-emerald-200">
+                            <div id="ideal-status-icon" class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-2xl font-bold">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h4 id="ideal-status-title" class="font-extrabold text-emerald-900 text-base">WAKTU SANGAT IDEAL (JAM KERJA)</h4>
+                                <p id="ideal-status-desc" class="text-xs text-emerald-700">Saat ini adalah waktu operasional perkuliahan. Sangat disarankan untuk mengirim pesan.</p>
+                            </div>
+                        </div>
+                        <div class="p-3.5 bg-slate-50 dark:bg-slate-700/40 rounded-xl text-xs space-y-1">
+                            <span class="font-bold text-slate-700 dark:text-slate-300 block">Panduan Indikator Waktu:</span>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> <span>08.00 - 16.00 WIB (Hijau - Sangat Direkomendasikan)</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> <span>16.00 - 18.30 WIB (Kuning - Rawan / Istirahat)</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> <span>19.00 - 07.00 WIB / Akhir Pekan (Merah - Hindari Kirim Pesan)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool C: Academic Letter Builder -->
+            <div id="subview-eksklusif-letter-builder" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-900 text-sapaaccent-400 flex items-center justify-center font-bold text-lg">C</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Academic Letter & Email Builder</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Generator otomatis naskah surat izin, dispensasi, klarifikasi nilai, dan email konsultasi.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-5 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Jenis Dokumen / Email:</label>
+                            <select id="letter-type" onchange="generateLetter()" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold">
+                                <option value="izin">Surat Izin Tidak Hadir Kuliah</option>
+                                <option value="dispensasi">Surat Dispensasi Kegiatan Organisasi</option>
+                                <option value="nilai">Permohonan Klarifikasi Nilai Ujian</option>
+                                <option value="rekomendasi">Permohonan Rekomendasi Beasiswa</option>
+                                <option value="penelitian">Email Permohonan Izin Penelitian</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="letter-name" onkeyup="generateLetter()" placeholder="Nama Lengkap" class="p-2 text-xs rounded-lg border bg-slate-50 dark:bg-slate-700">
+                            <input type="text" id="letter-nim" onkeyup="generateLetter()" placeholder="NIM" class="p-2 text-xs rounded-lg border bg-slate-50 dark:bg-slate-700">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="letter-prodi" onkeyup="generateLetter()" placeholder="Program Studi" class="p-2 text-xs rounded-lg border bg-slate-50 dark:bg-slate-700">
+                            <input type="text" id="letter-dosen" onkeyup="generateLetter()" placeholder="Nama Dosen / Dekan" class="p-2 text-xs rounded-lg border bg-slate-50 dark:bg-slate-700">
+                        </div>
+                        <textarea id="letter-reason" onkeyup="generateLetter()" rows="2" placeholder="Alasan / Alasan Utama..." class="w-full p-2 text-xs rounded-lg border bg-slate-50 dark:bg-slate-700"></textarea>
+                    </div>
+                    <div class="lg:col-span-7 bg-slate-50 dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-sapablue-700 dark:text-sapablue-300 block mb-2">Pratinjau Naskah Akademis:</span>
+                            <pre id="letter-preview" class="text-[11px] sm:text-xs text-slate-800 dark:text-slate-200 font-mono whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto p-3 bg-white dark:bg-slate-800 rounded-xl border"></pre>
+                        </div>
+                        <div class="flex space-x-2 pt-3">
+                            <button onclick="copyLetterText()" class="px-4 py-2 bg-sapablue-700 hover:bg-sapablue-900 text-white font-bold rounded-xl text-xs shadow transition">
+                                <i class="fas fa-copy mr-1"></i> Salin Naskah
+                            </button>
+                            <button onclick="downloadLetterDoc()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition">
+                                <i class="fas fa-download mr-1"></i> Unduh File (.txt)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool D: Smart Follow-Up Generator -->
+            <div id="subview-eksklusif-follow-up" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-900 text-sapaaccent-400 flex items-center justify-center font-bold text-lg">D</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Smart Follow-Up Generator</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Buat pesan pengingat (follow-up) yang tetap santun jika chat sebelumnya belum dibalas.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div class="md:col-span-5 space-y-3">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pilih Waktu Tunggu Sejak Pesan Terakhir:</label>
+                        <select id="followup-days" onchange="generateFollowUp()" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 border text-xs font-bold">
+                            <option value="2">2 Hari (Gentle Reminder)</option>
+                            <option value="4">4 Hari (Polite Confirmation)</option>
+                            <option value="7">1 Minggu (Alternative Approach)</option>
+                        </select>
+                        <input type="text" id="followup-dosen" onkeyup="generateFollowUp()" placeholder="Nama Dosen (misal: Pak Wijaya)" class="w-full p-2 text-xs rounded-lg border bg-slate-50 dark:bg-slate-700">
+                        <input type="text" id="followup-topic" onkeyup="generateFollowUp()" placeholder="Topik Pesan (misal: Peretujuan Judul Skripsi)" class="w-full p-2 text-xs rounded-lg border bg-slate-50 dark:bg-slate-700">
+                    </div>
+                    <div class="md:col-span-7 bg-sapablue-50 dark:bg-slate-700/40 p-4 rounded-2xl border border-sapablue-100 dark:border-slate-600 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-sapablue-700 dark:text-sapablue-300 block mb-2">Rekomendasi Pesan Follow-Up:</span>
+                            <p id="followup-preview" class="text-xs text-slate-800 dark:text-slate-200 italic bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700"></p>
+                        </div>
+                        <button onclick="copyFollowUp()" class="mt-3 py-2 bg-sapablue-700 hover:bg-sapablue-900 text-white font-bold rounded-xl text-xs shadow transition">
+                            <i class="fas fa-copy mr-1"></i> Salin Pesan Follow-Up
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool E: Panduan Etika Ujian & Sidang -->
+            <div id="subview-eksklusif-etika-ujian" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-900 text-sapaaccent-400 flex items-center justify-center font-bold text-lg">E</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Panduan Etika Ujian & Sidang Skripsi</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Tata cara bersikap, menyapa penguji, serta mempertahankan argumen akademis secara profesional.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                        <h4 class="font-bold text-sm text-sapablue-700 dark:text-sapablue-300 mb-1"><i class="fas fa-door-open mr-1"></i> Memasuki Ruangan</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Ketuk pintu 3 kali, berikan salam hormat, serta berdiri hingga dipersilahkan duduk oleh ketua penguji.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                        <h4 class="font-bold text-sm text-sapablue-700 dark:text-sapablue-300 mb-1"><i class="fas fa-user-check mr-1"></i> Menyapa Penguji</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Sapa seluruh dosen penguji dengan gelar resmi lengkap dan ucapan terima kasih atas waktu yang diberikan.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                        <h4 class="font-bold text-sm text-sapablue-700 dark:text-sapablue-300 mb-1"><i class="fas fa-street-view mr-1"></i> Bahasa Tubuh & Kontak Mata</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Duduk tegak, hindari menyilangkan tangan, catat masukan revisi, dan pertahankan kontak mata santun.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                        <h4 class="font-bold text-sm text-sapablue-700 dark:text-sapablue-300 mb-1"><i class="fas fa-brain mr-1"></i> Menjawab Pertanyaan Sulit</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Awali dengan <em>"Terima kasih atas pertanyaannya Bapak/Ibu..."</em>. Jika lupa, akui secara jujur dan ilmiah.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                        <h4 class="font-bold text-sm text-sapablue-700 dark:text-sapablue-300 mb-1"><i class="fas fa-comments text-amber-500 mr-1"></i> Menerima Kritik & Masukan</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Jangan defensif atau memotong kalimat dosen. Dengarkan hingga selesai sebelum merespons.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                        <h4 class="font-bold text-sm text-sapablue-700 dark:text-sapablue-300 mb-1"><i class="fas fa-graduation-cap text-emerald-500 mr-1"></i> Penutup Sidang</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Ucapkan rasa syukur, apresiasi mendalam kepada pembimbing & penguji, lalu rapikan meja kembali.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool F: Ethical Badge Generator -->
+            <div id="subview-eksklusif-badge-gen" class="sub-view hidden bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-sapablue-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sapablue-900 text-sapaaccent-400 flex items-center justify-center font-bold text-lg">F</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900 dark:text-white">Ethical Badge Generator ("Certified Polite Communicator")</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Buat sertifikat / kartu komitmen etika digital nama Anda sendiri untuk diunduh dan dibagikan!</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-5 space-y-3">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Nama Lengkap Mahasiswa:</label>
+                        <input type="text" id="badge-name-input" onkeyup="updateBadgeCanvas()" placeholder="Masukkan Nama Anda..." value="Mahasiswa Indonesia" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold">
+                        <p class="text-xs text-slate-500">Badge ini menandakan komitmen Anda dalam menjaga etika dan kesantunan berkomunikasi di lingkungan civitas akademika.</p>
+                        <button onclick="downloadBadge()" class="w-full py-3 bg-gradient-to-r from-sapablue-700 to-sapablue-900 text-white font-bold rounded-xl text-xs shadow-lg hover:shadow-xl transition flex items-center justify-center space-x-2">
+                            <i class="fas fa-download"></i> <span>Unduh Digital Badge (PNG)</span>
+                        </button>
+                    </div>
+                    <div class="lg:col-span-7 flex justify-center">
+                        <canvas id="badge-canvas" width="500" height="300" class="rounded-2xl shadow-xl max-w-full h-auto border-2 border-sapablue-200 dark:border-slate-600"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW 5: KUIS INTERAKTIF ================= -->
+        <div id="view-kuis" class="tab-view bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-3">
+                        <i class="fas fa-question-circle text-sapaaccent-600"></i>
+                        <span>Kuis Interaktif Etika Kampus (10 Soal)</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Uji pemahaman Anda mengenai seluruh etika, sopan santun, dan aturan komunikasi kampus.</p>
+                </div>
+                <div class="mt-2 md:mt-0 text-xs font-bold bg-sapablue-100 dark:bg-slate-700 text-sapablue-700 dark:text-sapablue-300 px-3 py-1.5 rounded-full">
+                    Skor Tertinggi: <span id="quiz-high-score">0</span> pts
+                </div>
+            </div>
+            <div id="quiz-container" class="space-y-6">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-500">
+                        <span>Soal <span id="quiz-current-num">1</span> dari 10</span>
+                        <span>Skor Saat Ini: <span id="quiz-current-score" class="text-sapablue-600">0</span></span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                        <div id="quiz-progress-bar" class="bg-sapablue-600 h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
+                    </div>
+                </div>
+                <h3 id="quiz-question-text" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">Loading soal kuis...</h3>
+                <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                <div id="quiz-explanation-box" class="hidden p-4 rounded-xl bg-sapablue-50 dark:bg-slate-700 border border-sapablue-200 dark:border-slate-600 space-y-1">
+                    <span id="quiz-feedback-title" class="text-xs font-extrabold uppercase"></span>
+                    <p id="quiz-explanation-text" class="text-xs text-slate-700 dark:text-slate-200"></p>
+                </div>
+                <div class="flex justify-end">
+                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden px-6 py-2.5 bg-sapablue-700 hover:bg-sapablue-900 text-white font-bold rounded-xl text-xs transition">
+                        Soal Selanjutnya <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="quiz-result-screen" class="hidden text-center py-8 space-y-4">
+                <div class="w-20 h-20 rounded-full bg-sapaaccent-400 text-slate-900 mx-auto flex items-center justify-center text-3xl font-extrabold shadow-lg">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white">Kuis Selesai!</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-300">Skor Akhir Anda:</p>
+                <div id="quiz-final-score" class="text-5xl font-black text-sapablue-700 dark:text-sapablue-300">100</div>
+                <p id="quiz-motivation-msg" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 max-w-md mx-auto italic font-medium"></p>
+                <button onclick="restartQuiz()" class="px-6 py-3 bg-sapablue-700 hover:bg-sapablue-900 text-white font-bold rounded-xl text-xs shadow-lg transition">
+                    <i class="fas fa-redo mr-1"></i> Ulangi Kuis
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= VIEW 6: TENTANG SAPAIN ================= -->
+        <div id="view-tentang" class="tab-view bg-gradient-to-br from-sapablue-900 to-sapablue-700 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
+            <div class="max-w-3xl mx-auto text-center space-y-4">
+                <div class="w-16 h-16 rounded-2xl bg-sapaaccent-400 text-sapablue-900 flex items-center justify-center text-3xl font-extrabold mx-auto shadow-lg">
+                    <i class="fas fa-heart font-bold"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold tracking-tight">Tentang SAPAin</h2>
+                <p class="text-sapablue-100 text-xs sm:text-sm leading-relaxed">
+                    <strong>SAPAin (Sarana Panduan Etika dalam Interaksi)</strong> adalah platform edukasi digital modern yang dirancang khusus untuk membantu mahasiswa memahami etika, sopan santun, dan tata krama berkomunikasi di lingkungan kampus.
+                </p>
+                <div class="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
+                    <h4 class="font-extrabold text-sapaaccent-300 text-lg">"Mulai dari Sapaan, Tumbuhkan Kesantunan."</h4>
+                </div>
+            </div>
+
+            <!-- Kartu Profil Tim Kelompok 5 -->
+            <div class="space-y-4 pt-4 border-t border-white/10">
+                <div class="text-center space-y-1">
+                    <span class="inline-block px-3 py-1 bg-sapaaccent-400 text-sapablue-900 rounded-full font-black text-xs uppercase tracking-widest shadow-md">
+                        <i class="fas fa-users mr-1"></i> Tim Pengembang
+                    </span>
+                    <h3 class="text-2xl font-extrabold text-white">Kelompok 5</h3>
+                    <p class="text-xs text-sapablue-200">Kreator & Pengembang Platform SAPAin</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+                    <!-- Member 1: Afgan -->
+                    <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center hover:bg-white/20 hover:scale-105 transition-all duration-300 space-y-2 group">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-sapaaccent-400 to-sapablue-300 text-sapablue-900 flex items-center justify-center text-xl font-black mx-auto shadow-md group-hover:rotate-6 transition-transform">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm sm:text-base text-white">Afgan</h4>
+                            <span class="text-[10px] font-semibold text-sapaaccent-300 bg-sapablue-900/60 px-2 py-0.5 rounded-full">Kelompok 5</span>
+                        </div>
+                    </div>
+
+                    <!-- Member 2: Imel -->
+                    <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center hover:bg-white/20 hover:scale-105 transition-all duration-300 space-y-2 group">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-sapaaccent-400 to-pink-300 text-sapablue-900 flex items-center justify-center text-xl font-black mx-auto shadow-md group-hover:rotate-6 transition-transform">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm sm:text-base text-white">Imel</h4>
+                            <span class="text-[10px] font-semibold text-sapaaccent-300 bg-sapablue-900/60 px-2 py-0.5 rounded-full">Kelompok 5</span>
+                        </div>
+                    </div>
+
+                    <!-- Member 3: Vani -->
+                    <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center hover:bg-white/20 hover:scale-105 transition-all duration-300 space-y-2 group">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-sapaaccent-400 to-purple-300 text-sapablue-900 flex items-center justify-center text-xl font-black mx-auto shadow-md group-hover:rotate-6 transition-transform">
+                            <i class="fas fa-user-ninja"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm sm:text-base text-white">Vani</h4>
+                            <span class="text-[10px] font-semibold text-sapaaccent-300 bg-sapablue-900/60 px-2 py-0.5 rounded-full">Kelompok 5</span>
+                        </div>
+                    </div>
+
+                    <!-- Member 4: Maheena -->
+                    <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center hover:bg-white/20 hover:scale-105 transition-all duration-300 space-y-2 group">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-sapaaccent-400 to-emerald-300 text-sapablue-900 flex items-center justify-center text-xl font-black mx-auto shadow-md group-hover:rotate-6 transition-transform">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm sm:text-base text-white">Maheena</h4>
+                            <span class="text-[10px] font-semibold text-sapaaccent-300 bg-sapablue-900/60 px-2 py-0.5 rounded-full">Kelompok 5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fitur Utama Highlights -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center space-y-1">
+                    <i class="fas fa-smile text-2xl text-sapaaccent-400"></i>
+                    <h4 class="font-bold text-sm">Belajar Fun</h4>
+                    <p class="text-[11px] text-sapablue-100">Penyampaian materi interaktif yang tidak membosankan.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center space-y-1">
+                    <i class="fas fa-gamepad text-2xl text-sapaaccent-400"></i>
+                    <h4 class="font-bold text-sm">Simulasi Interaktif</h4>
+                    <p class="text-[11px] text-sapablue-100">Uji kemampuan etika lewat simulasi situasi nyata.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center space-y-1">
+                    <i class="fas fa-tools text-2xl text-sapaaccent-400"></i>
+                    <h4 class="font-bold text-sm">Alat Praktis</h4>
+                    <p class="text-[11px] text-sapablue-100">Generator naskah surat dan checker pesan instan.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 text-xs text-center mt-12">
+        <div class="max-w-7xl mx-auto px-4 space-y-3">
+            <div class="flex items-center justify-center space-x-2 text-white font-bold text-base">
+                <span class="text-sapablue-400">SAPAin</span>
+                <span>- Sarana Panduan Etika dalam Interaksi</span>
+            </div>
+            <p>© 2026 SAPAin Platform Edukasi Digital Etika Kampus. Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        /* ----------------------------------------------------
+           0. TAB / SPA NAVIGATION SYSTEM
+        ---------------------------------------------------- */
+        function switchMainTab(tabId, subTabId = null) {
+            // Hide all main views
+            document.querySelectorAll('.tab-view').forEach(view => {
+                view.classList.remove('active-view');
+            });
+            // Show target view
+            const target = document.getElementById(`view-${tabId}`);
+            if (target) {
+                target.classList.add('active-view');
+            }
+
+            // Update main navbar button styles
+            document.querySelectorAll('.nav-main-btn').forEach(btn => {
+                btn.className = "nav-main-btn px-3 py-2 rounded-lg hover:bg-sapablue-100 dark:hover:bg-slate-700 transition font-medium";
+            });
+            const activeNavBtn = document.getElementById(`nav-btn-${tabId}`);
+            if (activeNavBtn) {
+                activeNavBtn.className = "nav-main-btn px-3 py-2 rounded-lg transition font-bold text-sapablue-700 bg-sapablue-100 dark:bg-slate-700 dark:text-sapablue-300";
+            }
+
+            // If a subTab is requested, switch to it as well
+            if (subTabId) {
+                switchSubTab(tabId, subTabId);
+            }
+
+            // Save user progress or scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchSubTab(parentTab, subId) {
+            // Hide all sub-views inside this parent
+            const parentView = document.getElementById(`view-${parentTab}`);
+            if (!parentView) return;
+
+            parentView.querySelectorAll('.sub-view').forEach(sub => {
+                sub.classList.add('hidden');
+            });
+
+            const targetSub = document.getElementById(`subview-${parentTab}-${subId}`);
+            if (targetSub) {
+                targetSub.classList.remove('hidden');
+            }
+
+            // Update sub-tab button styling
+            parentView.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                btn.className = "sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
+            });
+
+            const activeSubBtn = document.getElementById(`sub-${parentTab}-${subId}`);
+            if (activeSubBtn) {
+                activeSubBtn.className = "sub-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-sapablue-700 text-white";
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('dark-icon');
+            if (icon) {
+                if (document.documentElement.classList.contains('dark')) {
+                    icon.className = "fas fa-sun";
+                } else {
+                    icon.className = "fas fa-moon";
+                }
+            }
+        }
+
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+            if (!toast) return;
+
+            msgEl.innerText = message;
+            if(isSuccess) {
+                iconEl.className = "fas fa-check-circle text-emerald-400 dark:text-emerald-600 text-xl";
+            } else {
+                iconEl.className = "fas fa-exclamation-circle text-amber-400 text-xl";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function copyTextById(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const text = el.innerText || el.value;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Teks berhasil disalin ke clipboard!");
+            } catch (err) {
+                showToast("Gagal menyalin teks.", false);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function shuffleDailyTip() {
+            const tips = [
+                "Selalu awali pesan kepada dosen dengan salam dan sapaan hormat seperti 'Selamat Pagi Bapak/Ibu' sebelum menyampaikan maksud utama.",
+                "Jangan pernah mengirim pesan 'P' atau 'Ping' kepada dosen karena terkesan menuntut dan kurang sopan.",
+                "Cantumkan nama lengkap, NIM, dan kelas pada setiap pesan pertama kepada dosen pengampu mata kuliah.",
+                "Waktu paling ideal mengirim pesan akademis adalah pukul 08.00 hingga 16.00 WIB pada hari kerja.",
+                "Gunakan subjek email yang jelas dan lampirkan dokumen dengan nama file yang rapi dan profesional."
+            ];
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            const tipEl = document.getElementById('daily-tip-text');
+            if (tipEl) tipEl.innerText = `"${randomTip}"`;
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            if (query.length > 2) {
+                switchMainTab('materi', 'etika');
+                showToast(`Hasil pencarian untuk: "${query}"`);
+            }
+        }
+
+        function handleSearchMobile() {
+            const query = document.getElementById('search-input-mobile').value.toLowerCase();
+            if (query.length > 2) {
+                switchMainTab('materi', 'etika');
+                toggleMobileMenu();
+                showToast(`Hasil pencarian untuk: "${query}"`);
+            }
+        }
+
+        /* ----------------------------------------------------
+           11. INTERACTIVE FEATURE 1: SAPAin Check & Score (Updated)
+        ---------------------------------------------------- */
+        function analyzeSAPAMessage() {
+            const input = document.getElementById('sapa-check-input').value.trim();
+            const mode = document.getElementById('sapa-context-mode').value;
+            if(!input) {
+                showToast("Silahkan masukkan pesan terlebih dahulu.", false);
+                return;
+            }
+
+            let score = 100;
+            let checklist = [];
+
+            // Check Greeting
+            const hasGreeting = /selamat (pagi|siang|sore|malam)/i.test(input) || /assalamu/i.test(input) || /halo/i.test(input);
+            if(hasGreeting) {
+                checklist.push('<div class="flex items-center space-x-2 text-emerald-600"><i class="fas fa-check-circle"></i> <span>Salam & Sapaan Sopan</span></div>');
+            } else {
+                score -= 25;
+                checklist.push('<div class="flex items-center space-x-2 text-rose-500"><i class="fas fa-times-circle"></i> <span>Salam & Sapaan (Kurang/Tidak Ada)</span></div>');
+            }
+
+            // Check Identity / Context based on mode
+            if(mode === 'baru') {
+                const hasIdentity = /(nim|prodi|kelas|mahasiswa)/i.test(input);
+                if(hasIdentity) {
+                    checklist.push('<div class="flex items-center space-x-2 text-emerald-600"><i class="fas fa-check-circle"></i> <span>Identitas / NIM Lengkap</span></div>');
+                } else {
+                    score -= 25;
+                    checklist.push('<div class="flex items-center space-x-2 text-rose-500"><i class="fas fa-times-circle"></i> <span>Identitas / NIM belum dicantumkan</span></div>');
+                }
+            } else {
+                // Akrab mode: expects context or polite opening without rigid NIM requirement
+                const hasContext = /(izin|melanjutkan|diskusi|bimbingan|terkait)/i.test(input);
+                if(hasContext) {
+                    checklist.push('<div class="flex items-center space-x-2 text-emerald-600"><i class="fas fa-check-circle"></i> <span>Konteks Percakapan Lanjutan (Dosen Dikenal)</span></div>');
+                } else {
+                    score -= 15;
+                    checklist.push('<div class="flex items-center space-x-2 text-amber-500"><i class="fas fa-exclamation-circle"></i> <span>Perjelas maksud lanjutan diskusi</span></div>');
+                }
+            }
+
+            // Check Politeness words
+            const hasPolite = /(mohon maaf|izin|terima kasih|bapak|ibu|prof)/i.test(input);
+            if(hasPolite) {
+                checklist.push('<div class="flex items-center space-x-2 text-emerald-600"><i class="fas fa-check-circle"></i> <span>Kesantunan Berbahasa Baik</span></div>');
+            } else {
+                score -= 20;
+                checklist.push('<div class="flex items-center space-x-2 text-rose-500"><i class="fas fa-times-circle"></i> <span>Kurang kata santun (mohon maaf/izin)</span></div>');
+            }
+
+            // Check Closing
+            const hasClosing = /(terima kasih|trims|terimakasih)/i.test(input);
+            if(hasClosing) {
+                checklist.push('<div class="flex items-center space-x-2 text-emerald-600"><i class="fas fa-check-circle"></i> <span>Penutup & Ucapan Terima Kasih</span></div>');
+            } else {
+                score -= 20;
+                checklist.push('<div class="flex items-center space-x-2 text-rose-500"><i class="fas fa-times-circle"></i> <span>Penutup / Terima kasih belum ada</span></div>');
+            }
+
+            score = Math.max(0, score);
+            document.getElementById('sapa-score-badge').innerText = `Skor: ${score}/100`;
+            document.getElementById('sapa-checklist').innerHTML = checklist.join('');
+            
+            let feedback = "Pesan Anda sudah sangat baik dan memenuhi standar etika kampus!";
+            if(score < 75) feedback = "Perbaiki struktur pesan dengan menambahkan salam hormat, identitas/konteks, dan ucapan penutup.";
+            document.getElementById('sapa-feedback').innerText = feedback;
+            showToast("Analisis SAPA selesai!");
+        }
+
+        function clearSAPACheck() {
+            document.getElementById('sapa-check-input').value = '';
+            document.getElementById('sapa-score-badge').innerText = "Skor: -";
+            document.getElementById('sapa-feedback').innerText = "Pilih mode konteks di atas lalu klik 'Periksa Pesan'.";
+            document.getElementById('sapa-checklist').innerHTML = `
+                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Salam & Sapaan Sopan</span></div>
+                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Identitas / Konteks Relasi</span></div>
+                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Kesantunan Berbahasa</span></div>
+                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Kejelasan Tujuan Utama</span></div>
+                <div class="flex items-center space-x-2 text-slate-400"><i class="fas fa-minus-circle"></i> <span>Penutup & Terima Kasih</span></div>
+            `;
+        }
+
+        function copySAPAMessage() {
+            copyTextById('sapa-check-input');
+        }
+
+        /* ----------------------------------------------------
+           8. INTERACTIVE FEATURE 4: Roda Situasi Kampus (Canvas Wheel)
+        ---------------------------------------------------- */
+        const wheelCategories = [
+            { label: "Bertemu Dosen di Koridor", action: "Sapa dengan senyuman dan bungkukkan badan sedikit sebagai tanda hormat, sebutkan nama jika diperlukan.", do: "Menyapa ramah & berdiri tegak", dont: "Menghindar atau pura-pura tidak melihat", example: "Selamat pagi Bapak Wijaya, sehat selalu Pak." },
+            { label: "Bertanya Saat Kuliah", action: "Acungkan tangan, tunggu dipersilahkan dosen, lalu sampaikan pertanyaan secara lugas.", do: "Mengangkat tangan & bicara sopan", dont: "Menyela pembicaraan dosen di tengah kalimat", example: "Mohon izin bertanya Pak, terkait rumus di slide 4..." },
+            { label: "Diskusi Kelompok", action: "Hargai pendapat rekan setim, aktif berpartisipasi, dan hindari dominasi ego.", do: "Mendengarkan aktif & berbagi tugas", dont: "Memotong argumen atau pasif total", example: "Bagaimana jika kita bagi tugas bagian analisis data ini bersama?" },
+            { label: "Presentasi Tugas", action: "Gunakan pakaian formal rapi, tatap audiens, dan sampaikan materi dengan intonasi jelas.", do: "Kontak mata & pakaian rapi", dont: "Membaca teks slide secara kaku terus-menerus", example: "Selamat pagi rekan-rekan dan Dosen Pengampu..." },
+            { label: "Tugas Kelompok", action: "Komunikasi aktif di grup, patuhi tenggat waktu, dan kontribusi nyata.", do: "Bertanggung jawab & tepat waktu", dont: "Menghilang saat pembagian tugas (free rider)", example: "Teman-teman, draf bagian bab 2 sudah saya unggah ya." },
+            { label: "Meminta Bantuan Dosen", action: "Kirim pesan sesuai 6 langkah, temui di ruang dosen pada jam konsultasi.", do: "Buat janji temu & siap berkas", dont: "Datang mendadak tanpa konfirmasi sebelumnya", example: "Selamat pagi Ibu, mohon izin apakah Ibu ada waktu untuk bimbingan skripsi hari ini?" },
+            { label: "Organisasi / UKM", action: "Junjung tinggi koordinasi hierarki, hargai senior/pengurus, dan jaga fasilitas sekretariat.", do: "Tertib administrasi & sopan", dont: "Mengabaikan aturan atau merusak inventaris", example: "Izin melaporkan hasil rapat koordinasi acara kemarin." },
+            { label: "Fasilitas Kampus", action: "Gunakan lab/perpus sesuai aturan, jaga kebersihan, dan matikan perangkat setelah pakai.", do: "Merawat fasilitas bersama", dont: "Makan di ruang komputer atau merusak barang", example: "Mari kita jaga kebersihan ruang baca perpustakaan ini." },
+            { label: "Keterlambatan Kuliah", action: "Ketok pintu pelan, minta maaf pada dosen, lalu duduk dengan tenang.", do: "Meminta maaf & masuk diam-diam", dont: "Membuat gaduh atau membantah saat ditegur", example: "Mohon maaf Bapak atas keterlambatan saya..." },
+            { label: "Perbedaan Pendapat Nilai", action: "Klarifikasi secara privat via email/chat atau temui dosen di ruangannya secara sopan.", do: "Membawa bukti tugas & konfirmasi baik-baik", dont: "Protes emosional di grup WhatsApp kelas", example: "Mohon izin berkonsultasi mengenai rekap nilai tugas kemarin..." }
+        ];
+
+        let startAngle = 0;
+        let isSpinning = false;
+
+        function initWheel() {
+            drawWheel();
+        }
+
+        function drawWheel() {
+            const canvas = document.getElementById('wheel-canvas');
+            if(!canvas) return;
+            const wheelCtx = canvas.getContext('2d');
+            const numSegments = wheelCategories.length;
+            const arcSize = 2 * Math.PI / numSegments;
+            const colors = ['#1976D2', '#FFC107', '#4FC3F7', '#1565C0', '#FFD54F', '#0D47A1', '#90CAF9', '#FFB300', '#64B5F6', '#FFA000'];
+
+            wheelCtx.clearRect(0, 0, 280, 280);
+
+            for(let i = 0; i < numSegments; i++) {
+                const angle = startAngle + i * arcSize;
+                wheelCtx.beginPath();
+                wheelCtx.fillStyle = colors[i % colors.length];
+                wheelCtx.moveTo(140, 140);
+                wheelCtx.arc(140, 140, 135, angle, angle + arcSize, false);
+                wheelCtx.lineTo(140, 140);
+                wheelCtx.fill();
+                wheelCtx.stroke();
+
+                wheelCtx.save();
+                wheelCtx.fillStyle = "#FFFFFF";
+                wheelCtx.font = "bold 10px Inter";
+                wheelCtx.translate(140 + Math.cos(angle + arcSize / 2) * 85, 140 + Math.sin(angle + arcSize / 2) * 85);
+                wheelCtx.rotate(angle + arcSize / 2 + Math.PI / 2);
+                let labelText = wheelCategories[i].label.length > 14 ? wheelCategories[i].label.substring(0, 12) + '...' : wheelCategories[i].label;
+                wheelCtx.fillText(labelText, -wheelCtx.measureText(labelText).width / 2, 0);
+                wheelCtx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if(isSpinning) return;
+            isSpinning = true;
+            let spinAngleStart = Math.random() * 10 + 10;
+            let spinTime = 0;
+            let spinTimeTotal = Math.random() * 3000 + 4000;
+
+            function rotate() {
+                spinTime += 30;
+                if(spinTime >= spinTimeTotal) {
+                    isSpinning = false;
+                    displayWheelOutcome();
+                    return;
+                }
+                const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+                startAngle += (spinAngle * Math.PI / 180);
+                drawWheel();
+                requestAnimationFrame(rotate);
+            }
+            rotate();
+        }
+
+        function easeOut(t, b, c, d) {
+            const ts = (t /= d) * t;
+            const tc = ts * t;
+            return b + c * (tc + -3 * ts + 3 * t);
+        }
+
+        function displayWheelOutcome() {
+            const degrees = startAngle * 180 / Math.PI + 90;
+            const arclen = 360 / wheelCategories.length;
+            const index = Math.floor((360 - degrees % 360) / arclen) % wheelCategories.length;
+            const res = wheelCategories[index];
+
+            document.getElementById('wheel-category-badge').innerText = res.label;
+            document.getElementById('wheel-title').innerText = `Panduan Situasi: ${res.label}`;
+            document.getElementById('wheel-desc').innerText = "Berikut panduan tindakan konkret dan etika yang harus diterapkan:";
+            
+            document.getElementById('wheel-details').classList.remove('hidden');
+            document.getElementById('wheel-action').innerText = res.action;
+            document.getElementById('wheel-do').innerText = res.do;
+            document.getElementById('wheel-dont').innerText = res.dont;
+            document.getElementById('wheel-example').innerText = `"${res.example}"`;
+        }
+
+        function copyWheelExample() {
+            copyTextById('wheel-example');
+        }
+
+        /* ----------------------------------------------------
+           9. INTERACTIVE FEATURE 5: Ubah Kalimatku (Converter)
+        ---------------------------------------------------- */
+        function convertSentence() {
+            const input = document.getElementById('converter-input').value.trim();
+            if(!input) {
+                showToast("Silahkan ketik kalimat terlebih dahulu.");
+                return;
+            }
+
+            // Simple NLP transformations
+            let formal = input
+                .replace(/\bgmn\b/gi, "bagaimana")
+                .replace(/\bgak|nga|ngga\b/gi, "tidak")
+                .replace(/\bpak\b/gi, "Bapak")
+                .replace(/\bbu\b/gi, "Ibu")
+                .replace(/\budah\b/gi, "sudah")
+                .replace(/\bbisa\b/gi, "dapat")
+                .replace(/\btq|trims\b/gi, "terima kasih");
+
+            document.getElementById('output-formal').innerText = `Selamat pagi Bapak/Ibu, mohon maaf mengganggu waktu Anda. Permisi izin bertanya, ${formal}. Terima kasih banyak atas arahan Bapak/Ibu.`;
+            document.getElementById('output-semiformal').innerText = `Halo Bapak/Ibu, salam sehat selalu. Mengenai ${formal}, jika Bapak/Ibu ada waktu luang, mohon petunjuknya ya Pak/Bu. Terima kasih!`;
+            document.getElementById('output-academic').innerText = `Dengan hormat Bapak/Ibu Dosen, Sehubungan dengan keperluan perkuliahan, saya bermaksud mengonfirmasi hal berikut: ${formal}. Demikian permohonan ini disampaikan. Terima kasih atas perhatian Bapak/Ibu.`;
+        }
+
+        function clearConverter() {
+            document.getElementById('converter-input').value = '';
+            document.getElementById('output-formal').innerText = "Hasil kalimat akan muncul di sini...";
+            document.getElementById('output-semiformal').innerText = "Hasil kalimat akan muncul di sini...";
+            document.getElementById('output-academic').innerText = "Hasil kalimat akan muncul di sini...";
+        }
+
+        /* ----------------------------------------------------
+           10. INTERACTIVE FEATURE 6: Peta Etika Kampus
+        ---------------------------------------------------- */
+        const venueData = {
+            kelas: { title: "Ruang Kelas Perkuliahan", desc: "Etika: Hadir sebelum dosen masuk, atur HP ke mode getar, acungkan tangan sebelum bertanya, dan dilarang makan makanan berbau tajam." },
+            dosen: { title: "Ruang Dosen / Dekanat", desc: "Etika: Ketuk pintu 3 kali sebelum masuk, sapa dengan hormat, berdiri dengan sopan, dan sampaikan maksud secara lugas." },
+            perpus: { title: "Perpustakaan Kampus", desc: "Etika: Jaga ketenangan (dilarang menelepon), kembalikan buku tepat waktu, serta tidak meninggalkan sampah plastik." },
+            kantin: { title: "Kantin Kampus", desc: "Etika: Berperilaku antre dengan tertib, kembalikan alat makan ke piring kotor, serta jaga kebersihan meja." },
+            parkir: { title: "Area Parkir Kendaraan", desc: "Etika: Parkir kendaraan sesuai garis batasan, matikan mesin saat mengobrol, dan gunakan helm standar." },
+            aula: { title: "Aula Utama Kampus", desc: "Etika: Gunakan pakaian formal akademis saat seminar, matikan suara HP, dan ikuti acara hingga selesai." },
+            sekre: { title: "Sekretariat Organisasi / UKM", desc: "Etika: Jaga kebersihan ruang bersama, hormati jam istirahat malam, dan gunakan fasilitas untuk program formal." }
+        };
+
+        function showVenueEtiquette(key) {
+            const data = venueData[key];
+            document.getElementById('venue-name').innerText = data.title;
+            document.getElementById('venue-desc').innerText = data.desc;
+        }
+
+        /* ----------------------------------------------------
+           11. INTERACTIVE FEATURE 7: Kenali Gaya Komunikasimu
+        ---------------------------------------------------- */
+        const styleQuestions = [
+            {
+                q: "1. Bagaimana cara Anda biasanya menghubungi dosen via WhatsApp?",
+                options: ["Langsung to the point tanpa salam", "Salam, perkenalan NIM, maksud jelas, dan penutup", "Bertanya ke teman dulu sebelum berani chat", "Kirim pesan hanya kalau terdesak saja"]
+            }
+        ];
+
+        function renderStyleQuiz() {
+            const container = document.getElementById('style-quiz-question-container');
+            const data = styleQuestions[0];
+            container.innerHTML = `
+                <h4 class="font-bold text-sm text-slate-900 dark:text-white">${data.q}</h4>
+                <div class="space-y-2">
+                    ${data.options.map((opt, i) => `
+                        <button onclick="finishStyleQuiz(${i})" class="w-full text-left p-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-pink-100 dark:hover:bg-slate-700 border border-slate-200 text-xs font-medium transition">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function finishStyleQuiz(idx) {
+            document.getElementById('style-quiz-question-container').classList.add('hidden');
+            const resultBox = document.getElementById('style-quiz-result-container');
+            resultBox.classList.remove('hidden');
+
+            const profiles = [
+                { title: "Si Pengirim Gesit", desc: "Anda sangat responsif dan cepat, namun terkadang melupakan aspek kelengkapan salam dan perkenalan identitas.", tips: "💡 Tips: Luangkan waktu 10 detik untuk menambahkan salam hormat dan nama/NIM." },
+                { title: "Si Komunikator Santun (Ideal!)", desc: "Selamat! Anda memiliki pemahaman etika komunikasi yang luar biasa prima, santun, dan sangat profesional.", tips: "🌟 Tips: Pertahankan kebiasaan unggul ini di dunia kerja!" },
+                { title: "Si Pemikir Sebelum Berbicara", desc: "Anda sangat berhati-hati dan teliti, namun terkadang terlalu ragu untuk memulai komunikasi dengan dosen.", tips: "💡 Tips: Gunakan fitur 'Ubah Kalimatku' untuk menambah rasa percaya diri Anda." },
+                { title: "Si Komunikator Perlu Berlatih", desc: "Anda masih perlu mempelajari struktur pesan dan tata krama dalam interaksi civitas akademika.", tips: "💡 Tips: Pelajari 6 Langkah Emas Chat Dosen di SAPAin secara berkala." }
+            ];
+
+            const p = profiles[idx];
+            document.getElementById('style-result-title').innerText = p.title;
+            document.getElementById('style-result-desc').innerText = p.desc;
+            document.getElementById('style-result-tips').innerText = p.tips;
+        }
+
+        function resetStyleQuiz() {
+            document.getElementById('style-quiz-question-container').classList.remove('hidden');
+            document.getElementById('style-quiz-result-container').classList.add('hidden');
+            renderStyleQuiz();
+        }
+
+        /* ----------------------------------------------------
+           12. EXCLUSIVE TOOLS LOGIC (A, B, C, D, E, F)
+        ---------------------------------------------------- */
+        // Persona Simulator
+        const personas = {
+            formal: { desc: "Sangat memperhatikan tata bahasa baku, perkenalan NIM, dan jam kirim.", reply: "Selamat pagi. Terkait pertanyaan Anda, silahkan baca kembali panduan di Silabus Bab 2." },
+            supel: { desc: "Ramah dan terbuka, merespons pesan santun dengan hangat.", reply: "Halo! Terima kasih informasinya ya. Mari kita diskusikan esok jam 10 di ruangan saya." },
+            sibuk: { desc: "Singkat dan padat. Membutuhkan pesan yang sangat langsung pada inti.", reply: "OK. Temui saya besok jam 13.00 WIB." }
+        };
+
+        function changePersona() {
+            const key = document.getElementById('persona-select').value;
+            document.getElementById('persona-desc-text').innerText = personas[key].desc;
+        }
+
+        function sendSimChat() {
+            const input = document.getElementById('sim-chat-input');
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            const box = document.getElementById('sim-chat-box');
+            // User Chat Bubble
+            const userHtml = `
+                <div class="flex items-start justify-end space-x-2">
+                    <div class="bg-sapablue-700 text-white p-3 rounded-2xl rounded-tr-none shadow-sm max-w-[80%]">
+                        ${txt}
+                    </div>
+                </div>
+            `;
+            box.innerHTML += userHtml;
+            input.value = '';
+
+            // Lecturer Simulated Response
+            setTimeout(() => {
+                const key = document.getElementById('persona-select').value;
+                const replyTxt = personas[key].reply;
+                const docHtml = `
+                    <div class="flex items-start space-x-2">
+                        <div class="w-7 h-7 rounded-full bg-sapablue-900 text-white flex items-center justify-center font-bold text-[10px]">D</div>
+                        <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[80%] text-slate-800 dark:text-slate-100">
+                            ${replyTxt}
+                        </div>
+                    </div>
+                `;
+                box.innerHTML += docHtml;
+                box.scrollTop = box.scrollHeight;
+            }, 800);
+        }
+
+        // Live Clock & Ideal Timing Calculator
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('id-ID');
+            const dayStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            if(document.getElementById('live-clock-time')) {
+                document.getElementById('live-clock-time').innerText = timeStr;
+                document.getElementById('live-clock-day').innerText = dayStr;
+            }
+        }
+
+        function checkCustomTime(val) {
+            if(!val) return;
+            const hour = parseInt(val.split(':')[0]);
+            const box = document.getElementById('ideal-status-box');
+            
+            if(hour >= 8 && hour < 16) {
+                box.className = "p-4 rounded-2xl border flex items-center space-x-4 bg-emerald-50 border-emerald-200";
+                document.getElementById('ideal-status-title').innerText = "WAKTU SANGAT IDEAL (JAM KERJA)";
+                document.getElementById('ideal-status-desc').innerText = "Saat ini adalah jam operasional perkuliahan. Kirim pesan Anda sekarang!";
+            } else if(hour >= 16 && hour < 19) {
+                box.className = "p-4 rounded-2xl border flex items-center space-x-4 bg-amber-50 border-amber-200";
+                document.getElementById('ideal-status-title').innerText = "WAKTU RAWAN (SORE / ISTIRAHAT)";
+                document.getElementById('ideal-status-desc').innerText = "Dosen mungkin sedang dalam perjalanan pulang. Pastikan pesan sangat mendesak.";
+            } else {
+                box.className = "p-4 rounded-2xl border flex items-center space-x-4 bg-rose-50 border-rose-200";
+                document.getElementById('ideal-status-title').innerText = "DI LUAR JAM KERJA (DILANGKAHI)";
+                document.getElementById('ideal-status-desc').innerText = "Sangat tidak disarankan mengirim pesan malam hari. Simpan draf dan kirim esok 08.00 WIB.";
+            }
+        }
+
+        // Letter Builder
+        function generateLetter() {
+            const type = document.getElementById('letter-type').value;
+            const name = document.getElementById('letter-name').value || "[Nama Mahasiswa]";
+            const nim = document.getElementById('letter-nim').value || "[NIM]";
+            const prodi = document.getElementById('letter-prodi').value || "[Program Studi]";
+            const dosen = document.getElementById('letter-dosen').value || "[Nama Dosen/Dekan]";
+            const reason = document.getElementById('letter-reason').value || "[Alasan Utama]";
+
+            let text = "";
+            if(type === 'izin') {
+                text = `Hal: Permohonan Izin Tidak Hadir Perkuliahan\n\nYth. ${dosen}\nDi Tempat\n\nDengan hormat,\nSaya yang bertanda tangan di bawah ini:\nNama: ${name}\nNIM: ${nim}\nProdi: ${prodi}\n\nBermaksud memohon izin tidak dapat mengikuti kegiatan perkuliahan dikarenakan: ${reason}.\n\nDemikian surat permohonan izin ini saya sampaikan. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih.\n\nHormat saya,\n${name}`;
+            } else {
+                text = `Hal: Permohonan Resmi Akademik\n\nYth. ${dosen}\n\nDengan hormat,\nSaya ${name} (NIM: ${nim}) dari Prodi ${prodi} mengajukan permohonan sehubungan dengan ${reason}.\n\nTerima kasih.`;
+            }
+            document.getElementById('letter-preview').innerText = text;
+        }
+
+        function copyLetterText() {
+            copyTextById('letter-preview');
+        }
+
+        function downloadLetterDoc() {
+            const text = document.getElementById('letter-preview').innerText;
+            const element = document.createElement('a');
+            const file = new Blob([text], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = "Surat_Akademis_SAPAin.txt";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // Follow Up Generator
+        function generateFollowUp() {
+            const days = document.getElementById('followup-days').value;
+            const dosen = document.getElementById('followup-dosen').value || "Bapak/Ibu Dosen";
+            const topic = document.getElementById('followup-topic').value || "pesan saya sebelumnya";
+
+            let txt = `Selamat pagi ${dosen}, mohon maaf mengganggu waktu Bapak/Ibu. Izin konfirmasi kembali terkait ${topic} yang telah saya kirimkan ${days} hari lalu. Jika Bapak/Ibu ada waktu luang, mohon petunjuknya. Terima kasih banyak.`;
+            document.getElementById('followup-preview').innerText = txt;
+        }
+
+        function copyFollowUp() {
+            copyTextById('followup-preview');
+        }
+
+        // Ethical Badge Generator (Canvas)
+        function updateBadgeCanvas() {
+            const canvas = document.getElementById('badge-canvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const name = document.getElementById('badge-name-input').value || "Mahasiswa Indonesia";
+
+            // Background Gradient
+            const grad = ctx.createLinearGradient(0, 0, 500, 300);
+            grad.addColorStop(0, '#0D47A1');
+            grad.addColorStop(1, '#1565C0');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 500, 300);
+
+            // Border
+            ctx.strokeStyle = '#FFD54F';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(15, 15, 470, 270);
+
+            // Header Logo Text
+            ctx.fillStyle = '#FFD54F';
+            ctx.font = 'bold 16px Inter';
+            ctx.fillText('SAPAin CERTIFIED COMMUNICATOR', 110, 55);
+
+            // Subtitle
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '12px Inter';
+            ctx.fillText('Sertifikat Komitmen Etika & Kesantunan Kampus', 120, 80);
+
+            // User Name
+            ctx.fillStyle = '#FFD54F';
+            ctx.font = 'bold 22px Inter';
+            ctx.fillText(name, 50, 150);
+
+            // Body
+            ctx.fillStyle = '#E3F2FD';
+            ctx.font = '11px Inter';
+            ctx.fillText('Telah berikrar menjaga sopan santun, etika komunikasi, dan tata krama', 50, 185);
+            ctx.fillText('akademik profesional di lingkungan civitas akademika universitas.', 50, 205);
+
+            // Date Stamp
+            const dateStr = new Date().toLocaleDateString('id-ID');
+            ctx.fillStyle = '#90CAF9';
+            ctx.font = '10px Inter';
+            ctx.fillText(`Terverifikasi Digital SAPAin: ${dateStr}`, 50, 250);
+        }
+
+        function downloadBadge() {
+            const canvas = document.getElementById('badge-canvas');
+            const link = document.createElement('a');
+            link.download = 'Ethical_Badge_SAPAin.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            showToast("Badge berhasil diunduh!");
+        }
+
+        /* ----------------------------------------------------
+           13. KUIS INTERAKTIF ENGINE (10 SOAL)
+        ---------------------------------------------------- */
+        const quizData = [
+            { q: "1. Apa waktu yang paling ideal untuk mengirim pesan WhatsApp kepada dosen?", options: ["Pukul 22.00 malam saat suasana tenang", "Hari Minggu jam berapa saja", "Senin–Jumat pukul 08.00–16.00 WIB", "Saat dosen sedang mengajar di kelas"], correct: 2, exp: "Jam kerja operasional kampus (08.00–16.00 WIB) adalah waktu paling etis dan profesional." },
+            { q: "2. Penggunaan kata sapaan pembuka berikut yang PALING TEPAT adalah...", options: ["P", "Halo bro", "Selamat pagi Bapak Dr. Wijaya,", "Ping!"], correct: 2, exp: "Awali selalu dengan salam hormat dan sebutkan nama/gelar dosen secara benar." },
+            { q: "3. Komponen penting yang WAJIB dicantumkan saat pertama kali chat dosen adalah...", options: ["Foto selfie terbaru", "Identitas diri lengkap (Nama, NIM, Kelas)", "Sticker lucu", "Daftar keinginan nilai"], correct: 1, exp: "Dosen mengajar banyak mahasiswa. Menuliskan Nama, NIM, & Kelas mempermudah verifikasi." },
+            { q: "4. Bagaimana sikap yang benar saat dosen terlambat datang ke kelas?", options: ["Langsung pulang tanpa konfirmasi", "Menunggu dengan tertib & mengonfirmasi ketua kelas", "Membuat kegaduhan di koridor", "Mengunci pintu kelas"], correct: 1, exp: "Menunggu dengan tenang dan meminta Ketua Kelas mengonfirmasi keberadaan dosen secara santun." },
+            { q: "5. Saat berkonsultasi bimbingan skripsi, hal yang HARUS DIHINDARI adalah...", options: ["Membawa draf makalah rapi", "Mendadak meminta tanda tangan tanpa bimbingan", "Mencatat revisi dosen", "Datang tepat waktu"], correct: 1, exp: "Meminta tanda tangan secara instan melanggar etika dan proses akademis." },
+            { q: "6. Format subjek email formal yang benar kepada dosen adalah...", options: ["KOSONGKAN SAJA", "TOLONG DIBALAS PAK", "Permohonan Izin Penelitian - Andi (NIM 12345)", "Tugas"], correct: 2, exp: "Subjek email harus informatif mencakup tujuan dan nama pengirim." },
+            { q: "7. Sikap terbaik saat berselisih pendapat saat berdiskusi di kelas adalah...", options: ["Memotong pembicaraan dengan nada tinggi", "Menyampaikan sanggahan berbasis data dengan bahasa santun", "Langsung keluar dari kelas", "Mengabaikan pendapat teman"], correct: 1, exp: "Diskusi akademis mengutamakan data rasional dan bahasa saling menghargai." },
+            { q: "8. Jika pesan Anda belum dibalas dosen setelah 2 hari, langkah terbaik adalah...", options: ["Kirim pesan 'P' berulang kali", "Kirim pengingat (follow-up) santun pada jam kerja", "Telepon berkali-kali tanpa henti", "Marah di media sosial"], correct: 1, exp: "Kirimkan gentle reminder yang sopan dengan menyebutkan konteks pesan sebelumnya." },
+            { q: "9. Etika berada di perpustakaan kampus adalah...", options: ["Menelepon dengan suara keras", "Menjaga ketenangan dan tidak merusak fasilitas", "Makan makanan berkuah di meja baca", "Menimbun buku tanpa dibaca"], correct: 1, exp: "Perpustakaan adalah ruang tenang bersama untuk belajar." },
+            { q: "10. Slogan utama dari platform SAPAin adalah...", options: ["Chat Cepat Nilai Hebat", "Mulai dari Sapaan, Tumbuhkan Kesantunan.", "Bebas Bicara Tanpa Batas", "Etika Itu Nomor Dua"], correct: 1, exp: "Slogan SAPAin menekankan pentingnya sapaan awal untuk membangun kesantunan." }
+        ];
+
+        let quizIndex = 0;
+        let quizScore = 0;
+
+        function renderQuizQuestion() {
+            const data = quizData[quizIndex];
+            document.getElementById('quiz-current-num').innerText = quizIndex + 1;
+            document.getElementById('quiz-current-score').innerText = quizScore;
+            document.getElementById('quiz-progress-bar').style.width = ((quizIndex + 1) / 10 * 100) + '%';
+            document.getElementById('quiz-question-text').innerText = data.q;
+            document.getElementById('quiz-explanation-box').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            const grid = document.getElementById('quiz-options-grid');
+            grid.innerHTML = '';
+            data.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-opt-btn p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/60 hover:bg-sapablue-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 text-xs font-semibold text-slate-800 dark:text-slate-100 text-left transition flex items-center space-x-2";
+                btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-sapablue-200 dark:bg-slate-600 text-sapablue-900 dark:text-slate-100 text-xs font-bold flex items-center justify-center">${String.fromCharCode(65+idx)}</span> <span>${opt}</span>`;
+                btn.onclick = () => selectQuizAnswer(idx, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectQuizAnswer(selectedIdx, btnEl) {
+            // Disable all option buttons
+            document.querySelectorAll('.quiz-opt-btn').forEach(b => b.disabled = true);
+            const data = quizData[quizIndex];
+            const expBox = document.getElementById('quiz-explanation-box');
+            expBox.classList.remove('hidden');
+
+            if(selectedIdx === data.correct) {
+                quizScore += 10;
+                btnEl.className = "quiz-opt-btn p-3.5 rounded-xl bg-emerald-500 text-white font-bold text-xs text-left transition flex items-center space-x-2";
+                document.getElementById('quiz-feedback-title').className = "text-xs font-extrabold uppercase text-emerald-600 dark:text-emerald-400";
+                document.getElementById('quiz-feedback-title').innerText = "✓ Jawaban Benar!";
+            } else {
+                btnEl.className = "quiz-opt-btn p-3.5 rounded-xl bg-rose-500 text-white font-bold text-xs text-left transition flex items-center space-x-2";
+                document.getElementById('quiz-feedback-title').className = "text-xs font-extrabold uppercase text-rose-600 dark:text-rose-400";
+                document.getElementById('quiz-feedback-title').innerText = "✕ Jawaban Kurang Tepat";
+            }
+
+            document.getElementById('quiz-explanation-text').innerText = data.exp;
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            if(quizIndex < quizData.length - 1) {
+                quizIndex++;
+                renderQuizQuestion();
+            } else {
+                // Show Quiz Completion Screen
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('quiz-result-screen').classList.remove('hidden');
+                document.getElementById('quiz-final-score').innerText = quizScore;
+
+                let high = parseInt(localStorage.getItem('sapain_high_score') || '0');
+                if(quizScore > high) {
+                    localStorage.setItem('sapain_high_score', quizScore);
+                    document.getElementById('quiz-high-score').innerText = quizScore;
+                }
+
+                if(quizScore >= 80) {
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    document.getElementById('quiz-motivation-msg').innerText = "Luar Biasa! Pemahaman etika kampus Anda sangat matang dan siap diterapkan!";
+                } else {
+                    document.getElementById('quiz-motivation-msg').innerText = "Tetap semangat! Pelajari kembali materi modul SAPAin untuk hasil yang lebih sempurna.";
+                }
+            }
+        }
+
+        function restartQuiz() {
+            quizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            renderQuizQuestion();
+        }
+
+        /* ----------------------------------------------------
+           14. INITIALIZATION ON PAGE LOAD
+        ---------------------------------------------------- */
+        
+        // Added helper functions to resolve initialization references
+        function switchExampleTab(tabKey) {
+            document.querySelectorAll('.ex-tab-btn').forEach(b => {
+                b.className = "ex-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sapablue-100 transition";
+            });
+            const activeBtn = document.getElementById(`tab-ex-${tabKey}`);
+            if (activeBtn) activeBtn.className = "ex-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-sapablue-700 text-white transition";
+
+            const container = document.getElementById('example-card-container');
+            if (!container) return;
+
+            let content = "";
+            if (tabKey === 'tanya') {
+                content = `
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-rose-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-rose-600 uppercase"><i class="fas fa-times-circle"></i> Kurang Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Pak, mau tanya tugas kemarin dong, gmn caranya?"</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Tanpa salam, tanpa perkenalan nama/NIM, menggunakan singkatan alay ("gmn"), dan tidak menyebutkan mata kuliah.</p>
+                    </div>
+                    <div class="bg-emerald-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-emerald-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-emerald-600 uppercase"><i class="fas fa-check-circle"></i> Lebih Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Selamat pagi Bapak Dr. Wijaya. Saya Andi (NIM 123) kelas Etika A. Mohon maaf mengganggu, saya izin bertanya terkait materi tugas kemarin..."</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Lengkap dengan salam hormat, identitas diri, kalimat sopan, dan kejelasan tujuan.</p>
+                    </div>
+                `;
+            } else if (tabKey === 'izin') {
+                content = `
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-rose-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-rose-600 uppercase"><i class="fas fa-times-circle"></i> Kurang Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Bu saya sakit gak masuk kuliah ya hari ini."</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Terkesan memberitahu tanpa izin, tanpa salam, dan tanpa identitas.</p>
+                    </div>
+                    <div class="bg-emerald-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-emerald-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-emerald-600 uppercase"><i class="fas fa-check-circle"></i> Lebih Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Selamat pagi Ibu Anita, M.Sc. Saya Rina (NIM 456) kelas B. Mohon maaf menginformasikan bahwa saya berhalangan hadir..."</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Sopan, menyertakan nama, NIM, dan keterangan alasan yang jelas.</p>
+                    </div>
+                `;
+            } else if (tabKey === 'konsul') {
+                content = `
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-rose-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-rose-600 uppercase"><i class="fas fa-times-circle"></i> Kurang Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Pak kapan bisa bimbingan? Saya tunggu di ruang dosen ya."</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Nada kalimat terkesan memerintah dan memaksa waktu dosen.</p>
+                    </div>
+                    <div class="bg-emerald-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-emerald-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-emerald-600 uppercase"><i class="fas fa-check-circle"></i> Lebih Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Selamat siang Prof. Bambang. Mohon izin menanyakan kapan waktu luang Bapak minggu ini untuk konsultasi bimbingan..."</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Menghargai waktu dosen dengan meminta ketersediaan waktu secara sopan.</p>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="bg-rose-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-rose-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-rose-600 uppercase"><i class="fas fa-times-circle"></i> Kurang Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Tugas kelompok udah saya kirim ya pak."</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Tanpa salam, tanpa nama kelompok/anggota.</p>
+                    </div>
+                    <div class="bg-emerald-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-emerald-200 dark:border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-emerald-600 uppercase"><i class="fas fa-check-circle"></i> Lebih Tepat</span>
+                        <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Selamat pagi Bapak, berikut kami lampirkan tugas kelompok mata kuliah..."</p>
+                        <p class="text-[11px] text-slate-500">Alasan: Profesional, jelas, dan menyertakan salam pembuka.</p>
+                    </div>
+                `;
+            }
+            container.innerHTML = content;
+        }
+
+        const dilemmaScenarios = [
+            {
+                q: "Dosen tiba-tiba memanggil Anda untuk menjawab pertanyaan di kelas, namun Anda tidak memahami materinya.",
+                options: [
+                    "A. Berpura-pura koneksi internet putus atau keluar kelas",
+                    "B. Jujur menyampaikan kendala secara sopan dan meminta arahan belajar",
+                    "C. Menyalahkan teman sebelah karena tidak mencatat"
+                ],
+                correct: 1,
+                rating: "Sangat Tepat",
+                ratingClass: "bg-emerald-500 text-white",
+                impact: "Mencerminkan integritas dan kejujuran akademis.",
+                reason: "Kejujuran disertai kerendahan hati lebih dihargai dosen daripada berbohong.",
+                model: "Mohon maaf Bapak/Ibu, saya belum sepenuhnya memahami poin tersebut. Izin saya mempelajari kembali atau meminta penjelasan singkat."
+            },
+            {
+                q: "Pesan WhatsApp Anda belum dibalas dosen selama 3 hari padahal tenggat pengumpulan tugas besok.",
+                options: [
+                    "A. Mengirim spam 'P' dan menelepon berturut-turut",
+                    "B. Mengirim pesan follow-up santun pada jam kerja dengan mengingatkan subjek",
+                    "C. Mengabaikan tugas dan menyalahkan dosen"
+                ],
+                correct: 1,
+                rating: "Sangat Tepat",
+                ratingClass: "bg-emerald-500 text-white",
+                impact: "Menjaga hubungan baik tanpa menyinggung kesibukan dosen.",
+                reason: "Gentle reminder dengan bahasa santun menunjukkan profesionalisme mahasiswa.",
+                model: "Selamat pagi Bapak, mohon maaf mengingatkan kembali terkait pesan saya sebelumnya mengenai..."
+            }
+        ];
+        let currentDilemmaIdx = 0;
+
+        function renderDilemma() {
+            const sc = dilemmaScenarios[currentDilemmaIdx];
+            document.getElementById('dilemma-step-title').innerText = `Skenario ${currentDilemmaIdx + 1} dari ${dilemmaScenarios.length}`;
+            document.getElementById('dilemma-question').innerText = sc.q;
+            document.getElementById('dilemma-feedback-box').classList.add('hidden');
+
+            const optContainer = document.getElementById('dilemma-options');
+            optContainer.innerHTML = '';
+            sc.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-sapablue-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-medium transition";
+                btn.innerText = opt;
+                btn.onclick = () => selectDilemmaOption(idx);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function selectDilemmaOption(idx) {
+            const sc = dilemmaScenarios[currentDilemmaIdx];
+            const box = document.getElementById('dilemma-feedback-box');
+            box.classList.remove('hidden');
+
+            const badge = document.getElementById('dilemma-rating-badge');
+            if (idx === sc.correct) {
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500 text-white";
+                badge.innerText = "✓ Pilihan Tepat";
+            } else {
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500 text-white";
+                badge.innerText = "✕ Kurang Tepat";
+            }
+            document.getElementById('dilemma-impact-text').innerText = sc.impact;
+            document.getElementById('dilemma-reason-text').innerText = sc.reason;
+            document.getElementById('dilemma-model-response').innerText = sc.model;
+        }
+
+        function nextDilemma() {
+            currentDilemmaIdx = (currentDilemmaIdx + 1) % dilemmaScenarios.length;
+            renderDilemma();
+        }
+
+        function prevDilemma() {
+            currentDilemmaIdx = (currentDilemmaIdx - 1 + dilemmaScenarios.length) % dilemmaScenarios.length;
+            renderDilemma();
+        }
+
+        const detectiveLevels = [
+            {
+                text: "P Pak dosen, gmn tugas saya udah dinilai blm? tq",
+                errorIndex: 0,
+                explanation: "Kata 'P' di awal kalimat sangat tidak sopan dan terkesan menuntut.",
+                alternative: "Selamat pagi Bapak, mohon izin menanyakan status nilai tugas saya..."
+            }
+        ];
+        let currentDetectiveIdx = 0;
+        let detectiveScoreVal = 0;
+
+        function renderDetectiveLevel() {
+            const lvl = detectiveLevels[currentDetectiveIdx];
+            document.getElementById('detective-level').innerText = currentDetectiveIdx + 1;
+            document.getElementById('detective-result-box').classList.add('hidden');
+
+            const container = document.getElementById('detective-words-container');
+            container.innerHTML = '';
+            const words = lvl.text.split(' ');
+            words.forEach((w, i) => {
+                const span = document.createElement('span');
+                span.className = "px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-xs font-bold cursor-pointer hover:bg-sapablue-100 transition";
+                span.innerText = w;
+                span.onclick = () => checkDetectiveWord(i, lvl.errorIndex);
+                container.appendChild(span);
+            });
+        }
+
+        function checkDetectiveWord(idx, errorIdx) {
+            if (idx === errorIdx) {
+                detectiveScoreVal += 20;
+                document.getElementById('detective-score').innerText = detectiveScoreVal;
+                document.getElementById('detective-result-box').classList.remove('hidden');
+                document.getElementById('detective-explanation').innerText = detectiveLevels[currentDetectiveIdx].explanation;
+                document.getElementById('detective-alternative').innerText = detectiveLevels[currentDetectiveIdx].alternative;
+            } else {
+                showToast("Kata tersebut sudah cukup baik. Cari kata yang kurang sopan!");
+            }
+        }
+
+        function nextDetectiveLevel() {
+            currentDetectiveIdx = (currentDetectiveIdx + 1) % detectiveLevels.length;
+            renderDetectiveLevel();
+        }
+
+        function resetDetectiveGame() {
+            detectiveScoreVal = 0;
+            document.getElementById('detective-score').innerText = 0;
+            currentDetectiveIdx = 0;
+            renderDetectiveLevel();
+        }
+
+        function updateProgressBar() {
+            const percentage = localStorage.getItem('sapain_progress') || '35';
+            const bar = document.getElementById('progress-bar-fill');
+            const pctLabel = document.getElementById('progress-percentage');
+            if (bar) bar.style.width = percentage + '%';
+            if (pctLabel) pctLabel.innerText = percentage + '%';
+        }
+
+        window.onload = function() {
+            const high = localStorage.getItem('sapain_high_score') || '0';
+            document.getElementById('quiz-high-score').innerText = high;
+
+            updateProgressBar();
+            switchExampleTab('tanya');
+            renderDilemma();
+            renderDetectiveLevel();
+            initWheel();
+            showVenueEtiquette('kelas');
+            renderStyleQuiz();
+            changePersona();
+            generateLetter();
+            generateFollowUp();
+            updateBadgeCanvas();
+            renderQuizQuestion();
+
+            setInterval(updateClock, 1000);
+            updateClock();
+        };
+    </script>
+</body>
+</html>
